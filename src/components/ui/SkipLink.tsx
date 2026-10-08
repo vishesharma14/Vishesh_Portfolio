@@ -12,7 +12,7 @@ export function SkipLink({ href = '#main', label = 'Skip to main content' }: Ski
   return (
     <a
       href={href}
-      className="fixed top-4 left-4 z-50 -translate-y-[calc(100%+2rem)] rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-fg shadow-card-hover focus:translate-y-0"
+      className="fixed top-4 left-4 z-50 -translate-y-[calc(100%+2rem)] rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-fg focus:translate-y-0 focus:shadow-card-hover"
     >
       {label}
     </a>

@@ -9,7 +9,7 @@ const twMerge = extendTailwindMerge({
     theme: {
       text: ['display', 'title', 'heading', 'lead', 'eyebrow'],
       shadow: ['card', 'card-hover', 'accent'],
-      spacing: ['section', 'gutter'],
+      spacing: ['section', 'gutter', 'header'],
       container: ['content', 'narrow'],
       ease: ['smooth'],
     },

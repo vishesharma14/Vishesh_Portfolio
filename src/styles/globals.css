@@ -100,6 +100,7 @@
 
   --spacing-section: clamp(4.5rem, 3rem + 6vw, 8rem); /* vertical rhythm between sections */
   --spacing-gutter: clamp(1.25rem, 0.5rem + 3vw, 2.5rem); /* page side padding */
+  --spacing-header: 4rem; /* sticky navbar height */
 
   --container-content: 72rem;
   --container-narrow: 46rem;
@@ -146,6 +147,8 @@
     color-scheme: light;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    /* Section links land below the sticky navbar instead of under it. */
+    scroll-padding-top: var(--spacing-header);
   }
 
   body {
