@@ -57,23 +57,24 @@ Sections, exactly these and in this order (ids live in `src/app/navigation.ts`):
 
 ## Architecture
 
-- Folders: `src/app/` (router, root layout, navigation config, site identity), `src/components/ui/` and `src/components/layout/`, `src/pages/`, `src/admin/` (lazy-loaded chunk), `src/hooks/`, `src/lib/`, and `src/content/` from Step 4.
+- Folders: `src/app/` (router, root layout, navigation config, site identity), `src/components/ui/` and `src/components/layout/`, `src/features/<section>/` (one folder per page section, e.g. `hero/`, plus `chatbot/`), `src/pages/` (route pages that compose the features), `src/admin/` (lazy-loaded chunk), `src/hooks/`, `src/lib/`, and `src/content/`.
 - **Content:** components read content only through hooks (`useProfile()`, `useProjects()`, …) imported from `src/content/index.ts`, never from `local/` directly. Schemas in `src/content/schema.ts` are the single source of truth (types are inferred from them) and only validate, never change values. Real local content lives in `src/content/local/`, with `TODO(content)` notes where details aren't verified yet. All hooks go through one `useContent()`, which is the only thing that changes when the source switches to Supabase (Step 13). The app imports content types only, so zod stays out of the browser bundle.
 - **Supabase:** Postgres, Auth and Storage. Row-level security is the security layer: `is_admin()` requires an `admins` allowlist entry **and** an MFA-verified session. The public can read only published or visible rows. Sign-ups are disabled. SQL lives in `supabase/migrations/`.
 - **Browser env vars:** only `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. Everything else is server-only (names in `.env.example`).
 - **Server:** Vercel functions in `api/` (`chat`, `contact`, `github`), server-only helpers in `server/`, shared schemas in `shared/`. Never import `server/` from `src/`.
 - **Chatbot:** `/api/chat` builds the knowledge text from published content, uses a cached system prompt (no RAG), streams replies, validates input and rate-limits. The model comes from the `CHAT_MODEL` env var; never hardcode one.
+- **Chatbot switch:** `CHATBOT_ENABLED` in `src/features/chatbot/config.ts` stays `false` until Step 21. The Hero's chatbot entry renders only when the switch is on **and** a real `onOpenChat` handler is passed to `<Hero>`, so nothing can look clickable without working. While off, the production build drops the entry's code.
 - **Admin:** `/admin/*` is lazy-loaded; email + password + TOTP MFA. Route guards only control what the UI shows.
 
 ## Roadmap
 
-Done: **Steps 1–4** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Step 4 in the commit that adds `src/content/`). **Next: Step 5.**
+Done: **Steps 1–5** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Step 4 in `0f74b8d`, Step 5 in the commit that adds `src/features/hero/`). **Next: Step 6.**
 
 - **1. Done.** Vite + React + TypeScript (strict), ESLint, Prettier, scripts, `.gitignore`, `.env.example`
 - **2. Done.** Tailwind, design tokens, Inter, base UI components, reduced-motion and accessibility foundation
 - **3. Done.** App shell: router (`/`, `/admin/*` placeholder, 404), sticky navbar, active section, mobile menu, smooth scrolling, footer
 - **4. Done.** Content types and zod schemas, content module with verified local content, data hooks, `content:check`
-- **5.** Hero
+- **5. Done.** Hero: name, headline, CTAs (Resume only when a resume exists), profile links, photo or initials in a fixed frame, chatbot entry behind `CHATBOT_ENABLED`
 - **6.** About + Education timeline (current entries with an `endDate` show it as expected, e.g. "2022 – 2026 (expected)")
 - **7.** Skills
 - **8.** Featured Projects (cards, detail view)
@@ -103,5 +104,6 @@ Done: **Steps 1–4** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Ste
 - Tailwind 4 animates the `translate` and `scale` properties, not `transform`, so name those in `transition-[...]`.
 - The first deploy (11b) needs a Vercel SPA rewrite so deep links such as `/admin` work.
 - Headless Chrome ignores `--window-size` below about 500px; emulate viewports through the DevTools protocol instead.
+- Verifying hidden states (resume, chatbot, photo) happens in a scratchpad copy, never in the repo. Those scripts must use `set -euo pipefail`, check that the copy path is inside the scratchpad, and use absolute paths for every edit. Never rely on `cd` inside an `&&` chain: if an earlier command fails, later lines run in the real repo. Create the `node_modules` junction with PowerShell `New-Item -ItemType Junction`, and remove the junction itself (`(Get-Item path).Delete()`) before deleting the copy, or `rm -rf` can follow it into the real `node_modules`.
 - zod 4's `z.url()` trims its input, so `httpsUrl` rejects whitespace on the raw string first. Keep that order, or " https://…" passes validation while the site uses the untrimmed value.
 - Tailwind scans every non-ignored file, Markdown included, so words in CLAUDE.md can generate unused CSS (about 1 kB). Excluding it with `@source not` belongs to the Step 11 performance pass.

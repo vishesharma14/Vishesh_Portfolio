@@ -71,10 +71,16 @@ function uniqueList<Item extends z.ZodType>(
   })
 }
 
+/** Intrinsic pixel size of an image file. */
+const pixels = z.number().int('Use whole pixels').positive()
+
 export const imageSchema = z.object({
   src: z.union([sitePath, httpsUrl]),
   /** Describes the image for screen readers. Content images are informative, so it's required. */
   alt: text,
+  /** The file's real size in pixels. Rendered as width/height so the browser reserves its shape. */
+  width: pixels,
+  height: pixels,
 })
 
 // ---- Profile and About ---------------------------------------------------------
