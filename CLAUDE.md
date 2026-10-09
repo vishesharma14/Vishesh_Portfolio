@@ -27,9 +27,9 @@ A premium, minimal, product-like portfolio for Vishesh Sharma (AI/GenAI, ML and 
 Sections, exactly these and in this order (ids live in `src/app/navigation.ts`): Home `#home` · About Me `#about` · Education `#education` · Skills `#skills` · Featured Projects `#projects` · AI / GenAI `#ai` · GitHub Activity `#github` · Resume `#resume` · Contact `#contact`.
 
 - **Hero:** slot for the owner's real photo (neutral fallback), headline, calls to action, chatbot entry point. The photo and the chatbot are the visual focal points.
-- **Education:** school, Class X, Class XII, B.Tech, college/university, CGPA or percentage, dates.
+- **Education:** school, Class X, Class XII, B.Tech, college/university, CGPA or percentage, dates. When an entry is `current` and has an `endDate`, show that date as expected, e.g. "2022 – 2026 (expected)".
 - **Skills categories:** Programming, Data Analytics, AI / ML, GenAI, Web Development, Databases, Tools.
-- **Featured Projects, exactly these four:** SizerAI / Smart Fit AI · Intelligent Document Processing System · AI Mock Interview Platform · Olympic Analytics. Each has title, description, technologies, key features, GitHub link, live demo link, image and featured flag.
+- **Featured Projects, exactly these four:** SizerAI · Intelligent Document Processing System · AI Mock Interview Platform · Olympic Analytics. Each has title, description, technologies, key features, GitHub link, live demo link, image and featured flag.
 - **AI / GenAI:** machine learning, LLMs, RAG, vector databases, prompt engineering, AI agents, computer vision, generative AI.
 - **GitHub Activity:** profile, contribution activity, selected repositories.
 - **Resume:** preview, View and Download.
@@ -50,14 +50,15 @@ Sections, exactly these and in this order (ids live in `src/app/navigation.ts`):
 
 - React 19, TypeScript 6 (strict, `noUncheckedIndexedAccess`), Vite 8, Tailwind CSS 4, React Router 8 (data router).
 - ESLint 10 flat config (typescript-eslint strict and stylistic type-checked, React Hooks, React Refresh) and Prettier with Tailwind class sorting. No non-null assertions.
-- Scripts: `dev` (http://localhost:5173), `build` (`tsc -b && vite build`), `preview`, `typecheck`, `lint` (`--max-warnings 0`), `format`, `format:check`, `check` (typecheck + lint + format:check).
-- Keep TypeScript on `~6.0` until typescript-eslint supports TypeScript 7. Line endings are LF (`.gitattributes`).
+- Scripts: `dev` (http://localhost:5173), `build` (`tsc -b`, then `content:check`, then `vite build`), `preview`, `typecheck`, `lint` (`--max-warnings 0`), `format`, `format:check`, `content:check`, `check` (typecheck + lint + format:check + content:check).
+- `npm run content:check` validates the local content against the zod schemas (Node runs `scripts/check-content.ts` directly). Invalid content fails `check` and `build`, so it can never ship. It also lists content still to add, which doesn't fail anything.
+- Node `^22.18.0 || >=24` (needed to run TypeScript files directly). Keep TypeScript on `~6.0` until typescript-eslint supports TypeScript 7. Line endings are LF (`.gitattributes`).
 - Planned, installed only in the step that needs them: Framer Motion (`motion`, wrapped in `MotionConfig reducedMotion="user"`), Supabase JS, TanStack Query, zod, react-hook-form, lucide-react, react-markdown, Anthropic SDK, Upstash rate limiting, Resend.
 
 ## Architecture
 
 - Folders: `src/app/` (router, root layout, navigation config, site identity), `src/components/ui/` and `src/components/layout/`, `src/pages/`, `src/admin/` (lazy-loaded chunk), `src/hooks/`, `src/lib/`, and `src/content/` from Step 4.
-- **Content:** components read content only through hooks (`useProfile()`, `useProjects()`, …) from one content module. It starts with real local content (Step 4) and switches to Supabase (Step 13); only the module changes.
+- **Content:** components read content only through hooks (`useProfile()`, `useProjects()`, …) imported from `src/content/index.ts`, never from `local/` directly. Schemas in `src/content/schema.ts` are the single source of truth (types are inferred from them) and only validate, never change values. Real local content lives in `src/content/local/`, with `TODO(content)` notes where details aren't verified yet. All hooks go through one `useContent()`, which is the only thing that changes when the source switches to Supabase (Step 13). The app imports content types only, so zod stays out of the browser bundle.
 - **Supabase:** Postgres, Auth and Storage. Row-level security is the security layer: `is_admin()` requires an `admins` allowlist entry **and** an MFA-verified session. The public can read only published or visible rows. Sign-ups are disabled. SQL lives in `supabase/migrations/`.
 - **Browser env vars:** only `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. Everything else is server-only (names in `.env.example`).
 - **Server:** Vercel functions in `api/` (`chat`, `contact`, `github`), server-only helpers in `server/`, shared schemas in `shared/`. Never import `server/` from `src/`.
@@ -66,14 +67,14 @@ Sections, exactly these and in this order (ids live in `src/app/navigation.ts`):
 
 ## Roadmap
 
-Done: **Steps 1–3** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`). **Next: Step 4.**
+Done: **Steps 1–4** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Step 4 in the commit that adds `src/content/`). **Next: Step 5.**
 
 - **1. Done.** Vite + React + TypeScript (strict), ESLint, Prettier, scripts, `.gitignore`, `.env.example`
 - **2. Done.** Tailwind, design tokens, Inter, base UI components, reduced-motion and accessibility foundation
 - **3. Done.** App shell: router (`/`, `/admin/*` placeholder, 404), sticky navbar, active section, mobile menu, smooth scrolling, footer
-- **4.** Content types and schemas, content module with real local content, data hooks
+- **4. Done.** Content types and zod schemas, content module with verified local content, data hooks, `content:check`
 - **5.** Hero
-- **6.** About + Education timeline
+- **6.** About + Education timeline (current entries with an `endDate` show it as expected, e.g. "2022 – 2026 (expected)")
 - **7.** Skills
 - **8.** Featured Projects (cards, detail view)
 - **9.** AI / GenAI
@@ -81,7 +82,7 @@ Done: **Steps 1–3** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`). **
 - **11.** Responsive, accessibility and performance pass; title, description and social-preview tags; font preload
 - **11b.** First Vercel deploy of the public site (local content only, no Supabase/admin/chatbot yet). Deploy only when I ask.
 - **12.** Supabase migrations, RLS, `is_admin()`, storage, seed data, generated types (the owner creates the Supabase project)
-- **13.** Switch the content module to Supabase; verify the public can read but not write
+- **13.** Switch the content module to Supabase (map database `null`s to `undefined` before parsing, since the schemas reject `null`); verify the public can read but not write
 - **14.** Admin login + MFA, protected routes
 - **15.** Admin: profile, About, contact details, social links
 - **16.** Admin: education and skills (with reordering)
@@ -102,3 +103,5 @@ Done: **Steps 1–3** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`). **
 - Tailwind 4 animates the `translate` and `scale` properties, not `transform`, so name those in `transition-[...]`.
 - The first deploy (11b) needs a Vercel SPA rewrite so deep links such as `/admin` work.
 - Headless Chrome ignores `--window-size` below about 500px; emulate viewports through the DevTools protocol instead.
+- zod 4's `z.url()` trims its input, so `httpsUrl` rejects whitespace on the raw string first. Keep that order, or " https://…" passes validation while the site uses the untrimmed value.
+- Tailwind scans every non-ignored file, Markdown included, so words in CLAUDE.md can generate unused CSS (about 1 kB). Excluding it with `@source not` belongs to the Step 11 performance pass.
