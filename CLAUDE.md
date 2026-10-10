@@ -29,7 +29,7 @@ Sections, exactly these and in this order (ids live in `src/app/navigation.ts`):
 - **Hero:** slot for the owner's real photo (neutral fallback), headline, calls to action, chatbot entry point. The photo and the chatbot are the visual focal points.
 - **Education:** school, Class X, Class XII, B.Tech, college/university, CGPA or percentage, dates. When an entry is `current` and has an `endDate`, show that date as expected, e.g. "2022 – 2026 (expected)".
 - **Skills categories:** Programming, Data Analytics, AI / ML, GenAI, Web Development, Databases, Tools.
-- **Featured Projects, exactly these four:** SizerAI · Intelligent Document Processing System · AI Mock Interview Platform · Olympic Analytics. Each has title, description, technologies, key features, GitHub link, live demo link, image and featured flag.
+- **Featured Projects, exactly these three:** SizerAI · Explainable Fraud Detection System · Olympic Analytics. Their text in `src/content/local/projects.ts` comes verbatim from the owner: don't reword it or add claims. Each has title, description, technologies, key features, GitHub link, live demo link, image and featured flag.
 - **AI / GenAI:** machine learning, LLMs, RAG, vector databases, prompt engineering, AI agents, computer vision, generative AI.
 - **GitHub Activity:** profile, contribution activity, selected repositories.
 - **Resume:** preview, View and Download.
@@ -77,7 +77,7 @@ Done: **Steps 1–5** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Ste
 - **5. Done.** Hero: name, headline, CTAs (Resume only when a resume exists), profile links, photo or initials in a fixed frame, chatbot entry behind `CHATBOT_ENABLED`
 - **6.** About + Education timeline (current entries with an `endDate` show it as expected, e.g. "2022 – 2026 (expected)")
 - **7.** Skills
-- **8.** Featured Projects (cards, detail view)
+- **8.** Featured Projects (cards, detail view). The two Streamlit demos (Explainable Fraud Detection System, Olympic Analytics) sleep on Community Cloud when unused, so their "Live demo" link needs a short, honest hint, e.g. "Hosted on Streamlit, may take a moment to wake up"
 - **9.** AI / GenAI
 - **10.** Resume (preview, View, Download) + contact links; the form waits for Step 18
 - **11.** Responsive, accessibility and performance pass; title, description and social-preview tags; font preload
