@@ -68,14 +68,14 @@ Sections, exactly these and in this order (ids live in `src/app/navigation.ts`):
 
 ## Roadmap
 
-Done: **Steps 1–5** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Step 4 in `0f74b8d`, Step 5 in the commit that adds `src/features/hero/`). **Next: Step 6.**
+Done: **Steps 1–6** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Step 4 in `0f74b8d`, Step 5 in `55006fc`, Step 6 in the commit that adds `src/features/education/`). **Next: Step 7.**
 
 - **1. Done.** Vite + React + TypeScript (strict), ESLint, Prettier, scripts, `.gitignore`, `.env.example`
 - **2. Done.** Tailwind, design tokens, Inter, base UI components, reduced-motion and accessibility foundation
 - **3. Done.** App shell: router (`/`, `/admin/*` placeholder, 404), sticky navbar, active section, mobile menu, smooth scrolling, footer
 - **4. Done.** Content types and zod schemas, content module with verified local content, data hooks, `content:check`
 - **5. Done.** Hero: name, headline, CTAs (Resume only when a resume exists), profile links, photo or initials in a fixed frame, chatbot entry behind `CHATBOT_ENABLED`
-- **6.** About + Education timeline (current entries with an `endDate` show it as expected, e.g. "2022 – 2026 (expected)")
+- **6. Done.** About + Education timeline (ordered list, newest first; current entries with an `endDate` show it as expected, e.g. "2023 – 2027 (expected)"; sections render nothing when their content is empty)
 - **7.** Skills
 - **8.** Featured Projects (cards, detail view). The two Streamlit demos (Explainable Fraud Detection System, Olympic Analytics) sleep on Community Cloud when unused, so their "Live demo" link needs a short, honest hint, e.g. "Hosted on Streamlit, may take a moment to wake up"
 - **9.** AI / GenAI
