@@ -170,6 +170,8 @@ export const projectSchema = z.object({
   keyFeatures: z.array(text),
   githubUrl: httpsUrl.optional(),
   liveUrl: httpsUrl.optional(),
+  /** One more link next to GitHub and the live demo, e.g. a dashboard. */
+  extraLink: z.object({ label: text, url: httpsUrl }).optional(),
   image: imageSchema.optional(),
   featured: z.boolean(),
 })

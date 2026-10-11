@@ -77,12 +77,12 @@ Done: **Steps 1–6** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Ste
 - **5. Done.** Hero: name, headline, CTAs (Resume only when a resume exists), profile links, photo or initials in a fixed frame, chatbot entry behind `CHATBOT_ENABLED`
 - **6. Done.** About + Education timeline (ordered list, newest first; current entries with an `endDate` show it as expected, e.g. "2023 – 2027 (expected)"; sections render nothing when their content is empty)
 - **7.** Skills
-- **8.** Featured Projects (cards, detail view). The two Streamlit demos (Explainable Fraud Detection System, Olympic Analytics) sleep on Community Cloud when unused, so their "Live demo" link needs a short, honest hint, e.g. "Hosted on Streamlit, may take a moment to wake up"
+- **8.** Featured Projects (cards, detail view). The two Streamlit demos (Explainable Fraud Detection System, Olympic Analytics) sleep on Community Cloud when unused, so their "Live demo" link needs a short, honest hint, e.g. "Hosted on Streamlit, may take a moment to wake up". Render a project's optional `extraLink` as a third link button in the same style as GitHub and Live demo, opening in a new tab with `rel="noopener noreferrer"`, and check it fits at 390px
 - **9.** AI / GenAI
 - **10.** Resume (preview, View, Download) + contact links; the form waits for Step 18
 - **11.** Responsive, accessibility and performance pass; title, description and social-preview tags; font preload
 - **11b.** First Vercel deploy of the public site (local content only, no Supabase/admin/chatbot yet). Deploy only when I ask.
-- **12.** Supabase migrations, RLS, `is_admin()`, storage, seed data, generated types (the owner creates the Supabase project)
+- **12.** Supabase migrations, RLS, `is_admin()`, storage, seed data, generated types (the owner creates the Supabase project). The `projects` table needs columns for `extraLink` (label and url)
 - **13.** Switch the content module to Supabase (map database `null`s to `undefined` before parsing, since the schemas reject `null`); verify the public can read but not write
 - **14.** Admin login + MFA, protected routes
 - **15.** Admin: profile, About, contact details, social links
