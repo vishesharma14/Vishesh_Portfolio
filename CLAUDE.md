@@ -68,7 +68,7 @@ Sections, exactly these and in this order (ids live in `src/app/navigation.ts`):
 
 ## Roadmap
 
-Done: **Steps 1–6** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Step 4 in `0f74b8d`, Step 5 in `55006fc`, Step 6 in the commit that adds `src/features/education/`). **Next: Step 7.**
+Done: **Steps 1–7** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Step 4 in `0f74b8d`, Step 5 in `55006fc`, Step 6 in `559760e`, Step 7 in the commit that adds `src/features/skills/`). **Next: Step 8.**
 
 - **1. Done.** Vite + React + TypeScript (strict), ESLint, Prettier, scripts, `.gitignore`, `.env.example`
 - **2. Done.** Tailwind, design tokens, Inter, base UI components, reduced-motion and accessibility foundation
@@ -76,7 +76,7 @@ Done: **Steps 1–6** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Ste
 - **4. Done.** Content types and zod schemas, content module with verified local content, data hooks, `content:check`
 - **5. Done.** Hero: name, headline, CTAs (Resume only when a resume exists), profile links, photo or initials in a fixed frame, chatbot entry behind `CHATBOT_ENABLED`
 - **6. Done.** About + Education timeline (ordered list, newest first; current entries with an `endDate` show it as expected, e.g. "2023 – 2027 (expected)"; sections render nothing when their content is empty)
-- **7.** Skills
+- **7. Done.** Skills (one card per category in a 1/2/3-column grid, skills as a list of badges; categories without skills are hidden and the section renders nothing when all are empty; a last card alone in its row spans the full row, computed from the number of visible categories)
 - **8.** Featured Projects (cards, detail view). The two Streamlit demos (Explainable Fraud Detection System, Olympic Analytics) sleep on Community Cloud when unused, so their "Live demo" link needs a short, honest hint, e.g. "Hosted on Streamlit, may take a moment to wake up". Render a project's optional `extraLink` as a third link button in the same style as GitHub and Live demo, opening in a new tab with `rel="noopener noreferrer"`, and check it fits at 390px
 - **9.** AI / GenAI
 - **10.** Resume (preview, View, Download) + contact links; the form waits for Step 18
