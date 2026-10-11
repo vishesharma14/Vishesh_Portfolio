@@ -1,4 +1,4 @@
-import { useSkills } from '../../content/index.ts'
+import { useSectionDescriptions, useSkills } from '../../content/index.ts'
 import { Badge } from '../../components/ui/Badge.tsx'
 import { Card } from '../../components/ui/Card.tsx'
 import { Section } from '../../components/ui/Section.tsx'
@@ -12,12 +12,13 @@ import { cn } from '../../lib/cn.ts'
  */
 export function Skills() {
   const categories = useSkills().filter((category) => category.skills.length > 0)
+  const { skills: description } = useSectionDescriptions()
   if (categories.length === 0) return null
   const lastIndex = categories.length - 1
 
   return (
     <Section id="skills" aria-labelledby="skills-title" className="border-t border-border">
-      <SectionHeader titleId="skills-title" title="Skills" />
+      <SectionHeader titleId="skills-title" title="Skills" description={description} />
       <ul className="mt-10 grid gap-6 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3">
         {categories.map((category, index) => (
           <Card

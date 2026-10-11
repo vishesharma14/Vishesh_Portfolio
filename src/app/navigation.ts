@@ -24,3 +24,8 @@ export const sectionIds: readonly SectionId[] = sectionNav.map((item) => item.id
 export function sectionHref(id: SectionId): string {
   return `/#${id}`
 }
+
+/** Link to a project's detail page (route `projects/:slug` in router.ts). */
+export function projectHref(slug: string): string {
+  return `/projects/${slug}`
+}

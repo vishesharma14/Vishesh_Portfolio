@@ -9,6 +9,7 @@ export {
   useProfile,
   useProjects,
   useResume,
+  useSectionDescriptions,
   useSkills,
   useSocialLinks,
 } from './hooks.ts'
@@ -25,6 +26,7 @@ export type {
   Profile,
   Project,
   Resume,
+  SectionDescriptions,
   Skill,
   SkillCategory,
   SkillCategoryId,

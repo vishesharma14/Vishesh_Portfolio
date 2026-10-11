@@ -35,10 +35,43 @@ export function ArrowRightIcon(props: IconProps) {
   )
 }
 
+export function ArrowDownIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path {...stroke} d="M12 5v14M6 13l6 6 6-6" />
+    </Icon>
+  )
+}
+
+export function DownloadIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path {...stroke} d="M12 4v11M7 10l5 5 5-5M5 19.5h14" />
+    </Icon>
+  )
+}
+
+export function ArrowLeftIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path {...stroke} d="M19 12H5M11 6l-6 6 6 6" />
+    </Icon>
+  )
+}
+
 export function ArrowUpRightIcon(props: IconProps) {
   return (
     <Icon {...props}>
       <path {...stroke} d="M7 17L17 7M8 7h9v9" />
+    </Icon>
+  )
+}
+
+export function GraduationCapIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path {...stroke} d="M2.5 9 12 4.5 21.5 9 12 13.5 2.5 9Z" />
+      <path {...stroke} d="M6.5 11.2v4.3c0 1.6 2.5 3 5.5 3s5.5-1.4 5.5-3v-4.3M21.5 9v5" />
     </Icon>
   )
 }

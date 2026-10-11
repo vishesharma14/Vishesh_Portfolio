@@ -17,9 +17,12 @@
     Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
 
   /* Fluid sizes: grow smoothly from phone to desktop. */
-  --text-display: clamp(2.5rem, 1.75rem + 3.2vw, 4.5rem);
+
+  /* The Hero name. Sized to its @container (cqi), not the viewport: the name fills its column on
+     one line at every width, including the narrower column of the two-column layout at lg. */
+  --text-display: clamp(2.5rem, 13cqi, 5rem);
   --text-display--line-height: 1.04;
-  --text-display--letter-spacing: -0.035em;
+  --text-display--letter-spacing: -0.04em;
   --text-display--font-weight: 600;
 
   --text-title: clamp(2rem, 1.5rem + 2vw, 3rem);
@@ -121,6 +124,35 @@
   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Motion utilities ------------------------------------------------------------ */
+
+/* A short entrance: fade in while rising 0.75rem. Use it only as motion-safe:animate-rise, and
+   stagger elements with --rise-delay, e.g. [--rise-delay:80ms]. The delay is read here, on the
+   element itself: inside a @theme token, var() would resolve once at :root and ignore it. */
+@utility animate-rise {
+  animation: rise 300ms var(--ease-smooth) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 0.75rem;
+  }
+}
+
+/* A gentle downward nudge for a scroll cue: three slow beats after the entrance, then still.
+   Use it only as motion-safe:animate-nudge. */
+@utility animate-nudge {
+  animation: nudge 1.6s ease-in-out 0.6s 3;
+}
+
+@keyframes nudge {
+  50% {
+    translate: 0 0.1875rem;
+  }
+}
+
 /* Subtle single-hue gradients ----------------------------------------------- */
 
 /* Faint accent tint fading down from the top edge, for feature backdrops. */
@@ -130,6 +162,19 @@
     color-mix(in oklab, var(--color-accent-100) 70%, transparent),
     transparent 70%
   );
+}
+
+/* Very faint dot grid that fades out towards the edges (the mask), for the Hero backdrop.
+   Put it on its own decorative layer: the mask would also fade the element's content. */
+@utility bg-dot-grid {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--color-ink-400) 40%, transparent) 1px,
+    transparent 1.5px
+  );
+  background-size: 1.5rem 1.5rem;
+  /* Fully faded well before every edge, so no dots reach the next section's border. */
+  mask-image: radial-gradient(ellipse 75% 70% at 50% 40%, #000 20%, transparent 68%);
 }
 
 /* Accent-coloured text with a gentle tonal shift, for one highlighted word at most. */

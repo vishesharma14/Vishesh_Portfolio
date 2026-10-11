@@ -37,13 +37,23 @@ export function formatDateRange({
   return end ?? start
 }
 
+/** A score number as on mark sheets: "8.16", "78.0". */
+export function formatScoreValue(value: number): string {
+  return scoreNumber.format(value)
+}
+
+/** A CGPA scale: "10". */
+export function formatScoreScale(scale: number): string {
+  return scaleNumber.format(scale)
+}
+
 /** Visible and spoken forms of a score: "CGPA 8.16 / 10" is read as "CGPA 8.16 out of 10". */
 export function formatScore(score: EducationScore): { text: string; spoken: string } {
   if (score.kind === 'cgpa') {
-    const value = scoreNumber.format(score.value)
-    const scale = scaleNumber.format(score.scale)
+    const value = formatScoreValue(score.value)
+    const scale = formatScoreScale(score.scale)
     return { text: `CGPA ${value} / ${scale}`, spoken: `CGPA ${value} out of ${scale}` }
   }
-  const percentage = `${scoreNumber.format(score.value)}%`
+  const percentage = `${formatScoreValue(score.value)}%`
   return { text: percentage, spoken: `Score ${percentage}` }
 }

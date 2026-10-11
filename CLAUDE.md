@@ -6,6 +6,7 @@ Project rules for Claude Code sessions in this repo. This file is self-contained
 
 - Work on **one roadmap step per request**. Never build ahead or start the next step unprompted.
 - For every step: inspect the existing code first → implement only that step → `npm run format` → `npm run check` → `npm run build` → verify UI changes in a real browser at 390, 768 and 1280px → report files changed, checks and test results → **stop and wait** for approval.
+- After every step, make sure the dev server is running (start `npm run dev` in the background only if nothing is listening on port 5173), and end the report with clickable local links to every section or page the step added or changed.
 - Fix real failures before stopping; don't make extra improvements after verification.
 - Never delete or rewrite working code unnecessarily. Add a dependency only in the step that needs it.
 - **Git:** never commit, push or deploy unless explicitly asked. After a step is approved the user may ask for a milestone commit: stage only that step's files (never `.env*` other than `.env.example`, never secrets), push to `origin/main`, never force-push, then confirm local `main`, `origin/main` and GitHub `main` match and the tree is clean.
@@ -26,7 +27,7 @@ A premium, minimal, product-like portfolio for Vishesh Sharma (AI/GenAI, ML and 
 
 Sections, exactly these and in this order (ids live in `src/app/navigation.ts`): Home `#home` · About Me `#about` · Education `#education` · Skills `#skills` · Featured Projects `#projects` · AI / GenAI `#ai` · GitHub Activity `#github` · Resume `#resume` · Contact `#contact`.
 
-- **Hero:** slot for the owner's real photo (neutral fallback), headline, calls to action, chatbot entry point. The photo and the chatbot are the visual focal points.
+- **Hero:** availability chip, name, role line (the headline, "·" separators in the accent), intro, calls to action (View projects, Download résumé, profile links; each renders only when its target exists), quick facts computed from content, the owner's real photo (neutral fallback) with a current-study card on desktop, a scroll cue to #about on desktop, chatbot entry point. On desktop chip to quick facts and the photo fit the first screen. The photo and the chatbot are the visual focal points.
 - **Education:** school, Class X, Class XII, B.Tech, college/university, CGPA or percentage, dates. When an entry is `current` and has an `endDate`, show that date as expected, e.g. "2022 – 2026 (expected)".
 - **Skills categories:** Programming, Data Analytics, AI / ML, GenAI, Web Development, Databases, Tools.
 - **Featured Projects, exactly these three:** SizerAI · Explainable Fraud Detection System · Olympic Analytics. Their text in `src/content/local/projects.ts` comes verbatim from the owner: don't reword it or add claims. Each has title, description, technologies, key features, GitHub link, live demo link, image and featured flag.
@@ -42,8 +43,9 @@ Sections, exactly these and in this order (ids live in `src/app/navigation.ts`):
 - Off-white canvas, deep navy text, white cards, subtle borders and shadows, generous spacing, Inter Variable (self-hosted), restrained motion.
 - **One accent only:** deep indigo / blue-violet. Avoid rainbow colours, neon, glow, large gradients, 3D, glassmorphism, excessive animation and clutter.
 - Tokens live in `src/styles/globals.css` (`@theme`). Tailwind's default palette is removed (`--color-*: initial`), so use `canvas`, `surface`, `ink-*`, `accent-*`, `danger-*`, `success-*` and the semantic `fg`, `fg-muted`, `fg-subtle`, `border`, `border-strong`, `border-input`.
-- Other tokens: text `display|title|heading|lead|eyebrow`; spacing `section`, `gutter`, `header`; containers `content`, `narrow`; shadows `card`, `card-hover`, `accent`; easing `smooth`. Register any new custom token in `src/lib/cn.ts` (tailwind-merge) too.
+- Other tokens: text `display|title|heading|lead|eyebrow` (`display` is the Hero name, sized to its `@container` in `cqi`); spacing `section`, `gutter`, `header`; containers `content`, `narrow`; shadows `card`, `card-hover`, `accent`; easing `smooth`. Utilities in `globals.css`: `bg-accent-wash`, `text-accent-gradient`, `bg-dot-grid` (Hero backdrop, on its own decorative layer) `animate-rise` (entrance fade-and-rise; only as `motion-safe:animate-rise`, staggered with `[--rise-delay:…]`) and `animate-nudge` (three gentle beats for a scroll cue; only with `motion-safe:`). Register any new custom token in `src/lib/cn.ts` (tailwind-merge) too.
 - Accessibility: WCAG AA contrast (text ≥ 4.5:1, form-field outlines ≥ 3:1), visible focus ring, skip link, semantic landmarks, touch targets ≥ 44px, `prefers-reduced-motion` honoured (CSS safety net in `globals.css`; use `motion-safe:` for movement).
+- Buttons keep a visible text label at every width, phones included: no icon-only buttons (the navbar's menu toggle, named "Menu" for screen readers, predates this rule).
 - Base UI in `src/components/ui/`: `Button`/`ButtonLink` (`buttonStyles()` styles router links), `Card`, `Badge`, `Container`, `Section`, `SectionHeader`, form controls, `SkipLink`.
 
 ## Stack and tooling
@@ -68,7 +70,7 @@ Sections, exactly these and in this order (ids live in `src/app/navigation.ts`):
 
 ## Roadmap
 
-Done: **Steps 1–7** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Step 4 in `0f74b8d`, Step 5 in `55006fc`, Step 6 in `559760e`, Step 7 in the commit that adds `src/features/skills/`). **Next: Step 8.**
+Done: **Steps 1–8** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Step 4 in `0f74b8d`, Step 5 in `55006fc`, Step 6 in `559760e`, Step 7 in `86fd4df`, Step 8 and the Hero redesign in the commit that adds `src/features/projects/`). **Next: Step 9.**
 
 - **1. Done.** Vite + React + TypeScript (strict), ESLint, Prettier, scripts, `.gitignore`, `.env.example`
 - **2. Done.** Tailwind, design tokens, Inter, base UI components, reduced-motion and accessibility foundation
@@ -77,12 +79,12 @@ Done: **Steps 1–7** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Ste
 - **5. Done.** Hero: name, headline, CTAs (Resume only when a resume exists), profile links, photo or initials in a fixed frame, chatbot entry behind `CHATBOT_ENABLED`
 - **6. Done.** About + Education timeline (ordered list, newest first; current entries with an `endDate` show it as expected, e.g. "2023 – 2027 (expected)"; sections render nothing when their content is empty)
 - **7. Done.** Skills (one card per category in a 1/2/3-column grid, skills as a list of badges; categories without skills are hidden and the section renders nothing when all are empty; a last card alone in its row spans the full row, computed from the number of visible categories)
-- **8.** Featured Projects (cards, detail view). The two Streamlit demos (Explainable Fraud Detection System, Olympic Analytics) sleep on Community Cloud when unused, so their "Live demo" link needs a short, honest hint, e.g. "Hosted on Streamlit, may take a moment to wake up". Render a project's optional `extraLink` as a third link button in the same style as GitHub and Live demo, opening in a new tab with `rel="noopener noreferrer"`, and check it fits at 390px
+- **8. Done.** Featured Projects (one wide card per featured project, in content order: title, summary, tech stack, GitHub / Live demo / optional `extraLink` buttons that open in a new tab with `rel="noopener noreferrer"`, and View details; the section renders nothing without featured projects) and a page per featured project at `/projects/:slug` (summary, links, overview, key features, technologies). Any other slug, including a project that isn't featured, shows the 404 page. The two Streamlit demos (Explainable Fraud Detection System, Olympic Analytics) sleep on Community Cloud when unused, so their Live demo link carries the hint "Hosted on Streamlit, may take a moment to wake up"
 - **9.** AI / GenAI
-- **10.** Resume (preview, View, Download) + contact links; the form waits for Step 18
+- **10.** Resume (preview, View, Download) + contact links; the form waits for Step 18. Once the #contact section renders, pass `showContact` to `<Hero>` so its Contact button appears
 - **11.** Responsive, accessibility and performance pass; title, description and social-preview tags; font preload
 - **11b.** First Vercel deploy of the public site (local content only, no Supabase/admin/chatbot yet). Deploy only when I ask.
-- **12.** Supabase migrations, RLS, `is_admin()`, storage, seed data, generated types (the owner creates the Supabase project). The `projects` table needs columns for `extraLink` (label and url)
+- **12.** Supabase migrations, RLS, `is_admin()`, storage, seed data, generated types (the owner creates the Supabase project). The `projects` table needs columns for `extraLink` (label and url); also store profile `availability` and `intro`, education `shortQualification` and `shortInstitution`, and the section descriptions
 - **13.** Switch the content module to Supabase (map database `null`s to `undefined` before parsing, since the schemas reject `null`); verify the public can read but not write
 - **14.** Admin login + MFA, protected routes
 - **15.** Admin: profile, About, contact details, social links
@@ -99,6 +101,7 @@ Done: **Steps 1–7** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Ste
 
 - Section links are `Link to="/#id"`. React Router's `ScrollRestoration` scrolls to them using CSS smooth scrolling (`scroll-padding-top` is the navbar height), or to the top when the section doesn't exist yet. No custom scroll JavaScript.
 - `ScrollRestoration` has a `getKey` that keys fresh page loads by URL, because React Router gives every fresh load the same key, `"default"`.
+- Page changes (a new pathname, including browser Back) must jump, not glide: `InstantScrollOnPageChange` in `RootLayout` turns CSS smooth scrolling off for the one scroll React Router makes, so it must stay rendered just before `ScrollRestoration`. Section links on the same page still scroll smoothly.
 - The root route needs `HydrateFallback`; React Router 8 warns on direct loads of lazy routes without it.
 - The mobile menu closes on navigation by remembering the `location.key` it was opened at (the React Hooks lint rules forbid setState inside effects).
 - Tailwind 4 animates the `translate` and `scale` properties, not `transform`, so name those in `transition-[...]`.

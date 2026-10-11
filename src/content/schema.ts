@@ -91,6 +91,10 @@ export const profileSchema = z.object({
   initials: z.string().regex(/^[A-Z]{1,3}$/, 'Use one to three capital letters'),
   /** One line under the name in the Hero, e.g. a role and focus. */
   headline: text.optional(),
+  /** Short note in a pill above the name in the Hero, e.g. the roles the owner is open to. */
+  availability: text.optional(),
+  /** One or two sentences under the headline in the Hero. */
+  intro: text.optional(),
   location: text.optional(),
   /** The owner's real photo. Never a generated or stock image. */
   photo: imageSchema.optional(),
@@ -122,6 +126,9 @@ export const educationEntrySchema = z
     /** e.g. "Class XII" or "B.Tech in <branch>". */
     qualification: text,
     institution: text,
+    /** Short forms for tight spaces such as the Hero's study card, e.g. "B.Tech CSE", "SRM IST". */
+    shortQualification: text.optional(),
+    shortInstitution: text.optional(),
     /** Exam board (Class X/XII) or the university that awards the degree. */
     boardOrUniversity: text.optional(),
     location: text.optional(),
@@ -174,6 +181,14 @@ export const projectSchema = z.object({
   extraLink: z.object({ label: text, url: httpsUrl }).optional(),
   image: imageSchema.optional(),
   featured: z.boolean(),
+})
+
+// ---- Section descriptions -------------------------------------------------------------
+
+/** One-line descriptions under section titles. A section without one shows only its title. */
+export const sectionDescriptionsSchema = z.object({
+  skills: text.optional(),
+  projects: text.optional(),
 })
 
 // ---- AI / GenAI --------------------------------------------------------------------
@@ -239,6 +254,7 @@ export const portfolioContentSchema = z.object({
   education: uniqueList(educationEntrySchema, (entry) => entry.id, 'education id'),
   skills: uniqueList(skillCategorySchema, (category) => category.id, 'skill category'),
   projects: uniqueList(projectSchema, (project) => project.slug, 'project slug'),
+  sectionDescriptions: sectionDescriptionsSchema,
   aiTopics: uniqueList(aiTopicSchema, (topic) => topic.id, 'AI topic id'),
   socialLinks: uniqueList(socialLinkSchema, (link) => link.url, 'social link'),
   resume: resumeSchema.optional(),

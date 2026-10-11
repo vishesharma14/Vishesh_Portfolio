@@ -1,19 +1,27 @@
+import type { ReactNode } from 'react'
 import type { Profile } from '../../content/index.ts'
 import { cn } from '../../lib/cn.ts'
 
 interface PortraitProps {
   profile: Profile
   className?: string
+  /** Laid over the frame, e.g. a small card that the caller positions. */
+  children?: ReactNode
 }
 
 /**
  * The owner's photo, or a neutral initials monogram until a real photo is added.
  * Both fill the same fixed-shape frame, so swapping one for the other never shifts the layout.
+ * A soft accent panel sits offset behind the frame.
  */
-export function Portrait({ profile, className }: PortraitProps) {
+export function Portrait({ profile, className, children }: PortraitProps) {
   return (
-    <div className={cn('w-32 sm:w-40 lg:w-full', className)}>
-      <div className="@container aspect-square overflow-hidden rounded-3xl border border-border bg-surface shadow-card lg:aspect-[4/5] lg:rounded-[2rem]">
+    <div className={cn('relative w-24 sm:w-32 lg:w-full', className)}>
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 translate-x-2 translate-y-2 rounded-2xl bg-accent-100 sm:translate-x-2.5 sm:translate-y-2.5 sm:rounded-3xl lg:translate-x-5 lg:translate-y-5 lg:rounded-[2rem]"
+      />
+      <div className="@container relative aspect-square overflow-hidden rounded-2xl border border-border bg-surface shadow-card sm:rounded-3xl lg:aspect-[4/5] lg:rounded-[2rem]">
         {profile.photo ? (
           // The photo is the largest element in the Hero (the LCP image): never lazy-load it.
           // width/height are the file's real pixel size; the frame's CSS sets the shown size and
@@ -36,6 +44,7 @@ export function Portrait({ profile, className }: PortraitProps) {
           </div>
         )}
       </div>
+      {children}
     </div>
   )
 }

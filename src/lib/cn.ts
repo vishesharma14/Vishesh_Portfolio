@@ -12,6 +12,7 @@ const twMerge = extendTailwindMerge({
       spacing: ['section', 'gutter', 'header'],
       container: ['content', 'narrow'],
       ease: ['smooth'],
+      animate: ['rise', 'nudge'],
     },
   },
 })

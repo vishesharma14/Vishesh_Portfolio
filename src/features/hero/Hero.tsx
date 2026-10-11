@@ -1,18 +1,32 @@
+import { Fragment } from 'react'
 import { Link } from 'react-router'
 import { sectionHref } from '../../app/navigation.ts'
-import { useProfile, useResume, useSocialLinks, type SocialPlatform } from '../../content/index.ts'
+import {
+  useAbout,
+  useEducation,
+  useProfile,
+  useResume,
+  useSocialLinks,
+  type SocialPlatform,
+} from '../../content/index.ts'
 import { buttonStyles } from '../../components/ui/buttonStyles.ts'
 import { Container } from '../../components/ui/Container.tsx'
 import {
+  ArrowDownIcon,
   ArrowRightIcon,
-  ArrowUpRightIcon,
+  DownloadIcon,
   GitHubIcon,
   LinkedInIcon,
   LinkIcon,
 } from '../../components/ui/icons.tsx'
+import { cn } from '../../lib/cn.ts'
 import { ChatbotEntry } from '../chatbot/ChatbotEntry.tsx'
 import { CHATBOT_ENABLED } from '../chatbot/config.ts'
+import { useFeaturedProjects } from '../projects/useFeaturedProjects.ts'
+import { findCurrentEducation, heroFacts, studyLabel } from './facts.ts'
 import { Portrait } from './Portrait.tsx'
+import { QuickFacts } from './QuickFacts.tsx'
+import { StudyCard } from './StudyCard.tsx'
 
 const socialIcons: Record<SocialPlatform, typeof LinkIcon> = {
   github: GitHubIcon,
@@ -23,90 +37,165 @@ const socialIcons: Record<SocialPlatform, typeof LinkIcon> = {
 interface HeroProps {
   /** Opens the chat panel. Supplied once the chatbot exists (Step 21); until then it's absent. */
   onOpenChat?: () => void
+  /**
+   * Whether the page has a #contact section. The Contact button renders only then, so it never
+   * looks clickable without working. Pass it once that section exists (Step 10).
+   */
+  showContact?: boolean
 }
 
-/** The #home section: name, headline, calls to action, profile links and portrait. */
-export function Hero({ onOpenChat }: HeroProps) {
+/**
+ * The #home section: availability, name, role line, intro, calls to action, quick facts and the
+ * portrait, over a faint dot grid. From lg it fills the first screen with its content centred and
+ * a scroll cue at the bottom; below that it takes its natural height. Every action renders only
+ * when its target exists. Text and photo fade in on load (motion-safe).
+ */
+export function Hero({ onOpenChat, showContact = false }: HeroProps) {
   const profile = useProfile()
   const resume = useResume()
   const socialLinks = useSocialLinks()
+  const about = useAbout()
+  const featuredProjects = useFeaturedProjects()
+  const currentEducation = findCurrentEducation(useEducation())
+  const facts = heroFacts(currentEducation, featuredProjects)
+  // "View projects" needs the #projects section, which renders only with featured projects.
+  const showProjects = featuredProjects.length > 0
+  const hasActions = showProjects || showContact || resume !== undefined || socialLinks.length > 0
 
   return (
-    <section id="home" aria-labelledby="hero-title" className="bg-accent-wash">
-      <Container className="grid min-h-[calc(100svh-var(--spacing-header))] content-center items-center gap-10 py-16 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-16">
-        <div>
+    <section id="home" aria-labelledby="hero-title" className="relative isolate bg-accent-wash">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-dot-grid" />
+      <Container className="grid items-center gap-8 py-10 sm:gap-10 sm:py-14 lg:min-h-[calc(100svh-var(--spacing-header))] lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)] lg:content-center lg:gap-16 lg:py-16">
+        {/* A size container: the name (text-display) is sized to this column's width. */}
+        <div className="@container motion-safe:animate-rise">
+          {profile.availability ? (
+            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-fg-muted shadow-xs sm:mb-6 sm:text-sm">
+              <span
+                aria-hidden="true"
+                className="size-2 shrink-0 rounded-full bg-success-600 ring-4 ring-success-50"
+              />
+              {profile.availability}
+            </p>
+          ) : null}
           <h1 id="hero-title" className="text-display text-fg">
             {profile.fullName}
           </h1>
-          {profile.headline ? (
-            <p className="mt-4 max-w-xl text-heading font-medium text-fg-muted sm:mt-5">
-              {profile.headline}
+          {profile.headline ? <RoleLine text={profile.headline} className="mt-4 sm:mt-5" /> : null}
+          {profile.intro ? (
+            <p className="mt-4 max-w-[34rem] text-[1.0625rem] text-balance text-fg-muted sm:mt-5">
+              {profile.intro}
             </p>
           ) : null}
 
-          <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-10">
-            <Link
-              to={sectionHref('projects')}
-              className={buttonStyles({ size: 'lg', className: 'group' })}
-            >
-              View projects
-              <ArrowRightIcon className="-mr-1 size-[1.125rem] transition-[translate] duration-200 ease-smooth motion-safe:group-hover:translate-x-0.5" />
-            </Link>
-            <Link
-              to={sectionHref('contact')}
-              className={buttonStyles({ variant: 'secondary', size: 'lg' })}
-            >
-              Contact
-            </Link>
-            {resume ? (
-              // A text-style link (no side padding), so it lines up with the buttons when it
-              // wraps onto its own line on phones. It keeps the full 48px tap height.
-              <a
-                href={resume.file}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={buttonStyles({
-                  variant: 'ghost',
-                  size: 'lg',
-                  className: 'group gap-1.5 px-1 hover:bg-transparent',
-                })}
-              >
-                Resume
-                <ArrowUpRightIcon className="size-[1.125rem] text-fg-subtle transition-[color,translate] duration-200 ease-smooth group-hover:text-accent-700 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
-                <span className="sr-only"> (PDF, opens in a new tab)</span>
-              </a>
-            ) : null}
-          </div>
+          {hasActions ? (
+            <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-10">
+              {showProjects ? (
+                <Link to={sectionHref('projects')} className={buttonStyles({ className: 'group' })}>
+                  View projects
+                  <ArrowRightIcon className="-mr-1 size-[1.125rem] transition-[translate] duration-200 ease-smooth motion-safe:group-hover:translate-x-0.5" />
+                </Link>
+              ) : null}
+              {showContact ? (
+                <Link
+                  to={sectionHref('contact')}
+                  className={buttonStyles({ variant: 'secondary' })}
+                >
+                  Contact
+                </Link>
+              ) : null}
+              {resume ? (
+                <a
+                  href={resume.file}
+                  download={resume.downloadName}
+                  className={buttonStyles({ variant: 'secondary' })}
+                >
+                  <DownloadIcon className="-ml-0.5 size-[1.125rem]" />
+                  Download résumé
+                  <span className="sr-only"> (PDF)</span>
+                </a>
+              ) : null}
+              {socialLinks.length > 0 ? (
+                <ul aria-label="Profiles" className="flex flex-wrap gap-3">
+                  {socialLinks.map((link) => {
+                    const PlatformIcon = socialIcons[link.platform]
+                    return (
+                      <li key={link.url}>
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={buttonStyles({ variant: 'secondary' })}
+                        >
+                          <PlatformIcon className="-ml-0.5 size-[1.125rem]" />
+                          {link.label}
+                          <span className="sr-only"> (opens in a new tab)</span>
+                        </a>
+                      </li>
+                    )
+                  })}
+                </ul>
+              ) : null}
+            </div>
+          ) : null}
 
           {CHATBOT_ENABLED && onOpenChat ? (
             <ChatbotEntry onOpen={onOpenChat} className="mt-8" />
           ) : null}
 
-          {socialLinks.length > 0 ? (
-            <ul aria-label="Profiles" className="mt-8 flex flex-wrap gap-2">
-              {socialLinks.map((link) => {
-                const PlatformIcon = socialIcons[link.platform]
-                return (
-                  <li key={link.url}>
-                    <a
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-surface/80 px-4 text-sm font-medium text-fg-muted transition-colors duration-200 ease-smooth hover:border-border-strong hover:text-fg"
-                    >
-                      <PlatformIcon className="size-[1.125rem]" />
-                      {link.label}
-                      <span className="sr-only"> (opens in a new tab)</span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          ) : null}
+          <QuickFacts facts={facts} className="mt-8 sm:mt-10" />
         </div>
 
-        <Portrait profile={profile} className="order-first lg:order-none" />
+        <Portrait
+          profile={profile}
+          className="order-first [--rise-delay:80ms] motion-safe:animate-rise lg:order-none"
+        >
+          {currentEducation ? <StudyCard label={studyLabel(currentEducation)} /> : null}
+        </Portrait>
       </Container>
+
+      {about.paragraphs.length > 0 ? <ScrollCue /> : null}
     </section>
+  )
+}
+
+/**
+ * The headline as a role line. Its "·" separators are shown in the accent, and each item stays on
+ * one line ("Data Science" never splits); when the line wraps, it breaks after a separator.
+ */
+function RoleLine({ text, className }: { text: string; className?: string }) {
+  const items = text.split('·').map((item) => item.trim())
+
+  return (
+    <p className={cn('text-heading font-medium text-balance text-ink-700', className)}>
+      {items.map((item, index) => (
+        <Fragment key={`${String(index)}-${item}`}>
+          {index > 0 ? ' ' : null}
+          <span className="whitespace-nowrap">
+            {item}
+            {index < items.length - 1 ? (
+              <>
+                {' '}
+                <span className="text-accent-600">·</span>
+              </>
+            ) : null}
+          </span>
+        </Fragment>
+      ))}
+    </p>
+  )
+}
+
+/** "Scroll" with a down arrow at the bottom centre of the first screen, linking to #about. */
+function ScrollCue() {
+  return (
+    <Link
+      to={sectionHref('about')}
+      className="absolute inset-x-0 bottom-3 mx-auto hidden min-h-11 w-max flex-col items-center justify-center gap-1 rounded-full px-4 py-1.5 text-xs font-medium tracking-[0.08em] text-fg-muted transition-colors duration-200 ease-smooth [--rise-delay:100ms] hover:text-fg motion-safe:animate-rise lg:flex"
+    >
+      {/* Uppercase only on the visible word: Chrome passes text-transform on to screen readers. */}
+      <span className="uppercase">Scroll</span>
+      <span className="sr-only"> to About</span>
+      <ArrowDownIcon className="size-4 motion-safe:animate-nudge" />
+    </Link>
   )
 }

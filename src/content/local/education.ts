@@ -1,6 +1,7 @@
 import type { EducationEntry } from '../types.ts'
 
 // Verified: provided by the owner (2026-10-10). Keep the wording exactly as given.
+// The B.Tech short forms ("B.Tech CSE", "SRM IST") are the owner's, from the Hero brief (2026-10-11).
 // Order = display order: newest first. There is no separate "school" entry; the school appears
 // in the Class X and Class XII entries.
 export const education: EducationEntry[] = [
@@ -9,6 +10,8 @@ export const education: EducationEntry[] = [
     level: 'btech',
     qualification: 'Bachelor of Technology in Computer Science and Engineering',
     institution: 'SRM Institute of Science and Technology, Delhi-NCR Campus',
+    shortQualification: 'B.Tech CSE',
+    shortInstitution: 'SRM IST',
     location: 'Modinagar, Uttar Pradesh',
     startDate: '2023',
     endDate: '2027',

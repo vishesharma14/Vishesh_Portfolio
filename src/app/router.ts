@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router'
 import { PublicLayout } from '../components/layout/PublicLayout.tsx'
 import { HomePage } from '../pages/HomePage.tsx'
 import { NotFoundPage } from '../pages/NotFoundPage.tsx'
+import { ProjectPage } from '../pages/ProjectPage.tsx'
 import { RootLayout } from './RootLayout.tsx'
 
 export const router = createBrowserRouter([
@@ -14,6 +15,7 @@ export const router = createBrowserRouter([
         Component: PublicLayout,
         children: [
           { index: true, Component: HomePage },
+          { path: 'projects/:slug', Component: ProjectPage },
           { path: '*', Component: NotFoundPage },
         ],
       },
