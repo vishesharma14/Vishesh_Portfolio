@@ -9,6 +9,11 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/inter';
 
+/* The navbar's dark variant, e.g. navbar-dark:bg-night-950. It applies inside the navbar
+   ([data-navbar]) while the dark Hero band is under it: useDarkBandUnderNavbar then sets
+   data-navbar-tone="dark" on <html>. */
+@custom-variant navbar-dark (&:where(:root[data-navbar-tone='dark'] [data-navbar], :root[data-navbar-tone='dark'] [data-navbar] *));
+
 @theme {
   /* Typography ------------------------------------------------------------ */
 
@@ -82,11 +87,18 @@
   --color-accent-900: oklch(29% 0.12 278);
   --color-accent-950: oklch(22% 0.09 278);
 
+  /* Night: the dark Hero band only (and the navbar while it sits on it). On night, text uses
+     white, the light ink stops and the light accent stops; every other section stays light. */
+  --color-night-950: oklch(17.7% 0.034 269); /* ≈ #0B1020, the band */
+  --color-night-900: oklch(21.5% 0.04 269); /* raised surfaces: study card, menu panel */
+  --color-night-800: oklch(29% 0.045 269); /* hairlines: navbar edge, dividers */
+
   /* Status colours: muted, only for form and system feedback */
   --color-danger-50: oklch(97% 0.014 25);
   --color-danger-600: oklch(52% 0.17 25);
   --color-danger-700: oklch(45% 0.15 25);
   --color-success-50: oklch(97% 0.02 155);
+  --color-success-400: oklch(72% 0.16 155); /* on night: the Hero's availability dot */
   --color-success-600: oklch(52% 0.11 155);
   --color-success-700: oklch(44% 0.095 155);
 
@@ -164,17 +176,36 @@
   );
 }
 
-/* Very faint dot grid that fades out towards the edges (the mask), for the Hero backdrop.
-   Put it on its own decorative layer: the mask would also fade the element's content. */
+/* Very faint white dot grid that fades out towards the edges (the mask), for the dark Hero band.
+   Put it on its own decorative layer: the mask would also fade the element's content. At 7% white
+   a dot under the dimmest hero text still leaves it above 4.5:1. */
 @utility bg-dot-grid {
   background-image: radial-gradient(
     circle,
-    color-mix(in oklab, var(--color-ink-400) 40%, transparent) 1px,
+    color-mix(in oklab, var(--color-white) 7%, transparent) 1px,
     transparent 1.5px
   );
   background-size: 1.5rem 1.5rem;
   /* Fully faded well before every edge, so no dots reach the next section's border. */
   mask-image: radial-gradient(ellipse 75% 70% at 50% 40%, #000 20%, transparent 68%);
+}
+
+/* The site's only glow: a soft indigo light behind the Hero portrait. Radial, at most 25% opacity,
+   never animated. Don't use it anywhere else. It is full strength up to 60% of the radius (hidden
+   behind the photo), then fades out completely before the element's edge, so it never ends in a
+   hard line. */
+@utility bg-accent-glow {
+  background-image: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--color-accent-500) 25%, transparent) 60%,
+    transparent
+  );
+}
+
+/* Dark surfaces (the Hero band, and the navbar while it sits on it): a light focus ring that keeps
+   at least 3:1 against night. */
+@utility on-dark {
+  --focus-ring: var(--color-accent-300);
 }
 
 /* Accent-coloured text with a gentle tonal shift, for one highlighted word at most. */
@@ -224,15 +255,23 @@
     color: var(--color-accent-950);
   }
 
-  /* One consistent, clearly visible keyboard focus indicator. */
+  /* One consistent, clearly visible keyboard focus indicator. Dark surfaces set --focus-ring to a
+     lighter stop (the on-dark utility). */
   :focus-visible {
-    outline: 2px solid var(--color-accent-600);
+    outline: 2px solid var(--focus-ring, var(--color-accent-600));
     outline-offset: 2px;
   }
 
   button:not(:disabled),
   [role='button']:not([aria-disabled='true']) {
     cursor: pointer;
+  }
+
+  /* A navbar colour change that must show at once rather than fade: a page's first colour, and
+     the switch to light when another page opens (useDarkBandUnderNavbar). */
+  :root[data-navbar-instant] [data-navbar],
+  :root[data-navbar-instant] [data-navbar] * {
+    transition: none !important;
   }
 
   /* Reduced motion ---------------------------------------------------------- */
@@ -253,6 +292,13 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
+    }
+
+    /* The navbar changes colour in the very frame its tone changes: even 0.01ms transitions hold
+       the old colour for a frame or two. */
+    [data-navbar],
+    [data-navbar] * {
+      transition-property: none !important;
     }
   }
 }

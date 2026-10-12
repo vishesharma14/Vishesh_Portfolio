@@ -4,11 +4,13 @@ import { sectionHref, sectionNav, type SectionId } from '../../app/navigation.ts
 import { cn } from '../../lib/cn.ts'
 import { Button } from '../ui/Button.tsx'
 import { Container } from '../ui/Container.tsx'
+import { navLinkColors } from './navLinkColors.ts'
 
 /**
  * Menu button and drop-down section list for small and medium screens.
  * A disclosure, not a modal: focus is never trapped, Escape closes it and returns focus
- * to the button, and any navigation (including picking a link) closes it.
+ * to the button, and any navigation (including picking a link) closes it. The button and the
+ * panel follow the navbar's dark variant (`navbar-dark:`).
  */
 export function MobileMenu({ activeId }: { activeId: SectionId | null }) {
   const { key: locationKey } = useLocation()
@@ -41,7 +43,7 @@ export function MobileMenu({ activeId }: { activeId: SectionId | null }) {
       <Button
         ref={buttonRef}
         variant="ghost"
-        className="size-11 px-0 text-fg"
+        className="size-11 px-0 text-fg navbar-dark:text-white navbar-dark:hover:bg-white/10 navbar-dark:hover:text-white"
         aria-label="Menu"
         aria-expanded={open}
         aria-controls={panelId}
@@ -65,7 +67,7 @@ export function MobileMenu({ activeId }: { activeId: SectionId | null }) {
       <div
         id={panelId}
         className={cn(
-          'absolute inset-x-0 top-full border-b border-border bg-canvas shadow-card-hover transition-[opacity,translate,visibility] duration-200 ease-smooth',
+          'absolute inset-x-0 top-full border-b border-border bg-canvas shadow-card-hover transition-[opacity,translate,visibility,background-color,border-color] duration-200 ease-smooth navbar-dark:border-night-800 navbar-dark:bg-night-900',
           open ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-1 opacity-0',
         )}
       >
@@ -82,9 +84,7 @@ export function MobileMenu({ activeId }: { activeId: SectionId | null }) {
                       aria-current={active ? 'location' : undefined}
                       className={cn(
                         'flex min-h-12 items-center rounded-xl px-4 text-base font-medium transition-colors duration-200 ease-smooth',
-                        active
-                          ? 'bg-accent-50 text-accent-700'
-                          : 'text-fg-muted hover:bg-ink-100 hover:text-fg',
+                        navLinkColors(active),
                       )}
                     >
                       {item.label}

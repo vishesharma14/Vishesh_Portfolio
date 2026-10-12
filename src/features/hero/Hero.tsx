@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useRef } from 'react'
 import { Link } from 'react-router'
 import { sectionHref } from '../../app/navigation.ts'
 import {
@@ -19,6 +19,7 @@ import {
   LinkedInIcon,
   LinkIcon,
 } from '../../components/ui/icons.tsx'
+import { useDarkBandUnderNavbar } from '../../hooks/useDarkBandUnderNavbar.ts'
 import { cn } from '../../lib/cn.ts'
 import { ChatbotEntry } from '../chatbot/ChatbotEntry.tsx'
 import { CHATBOT_ENABLED } from '../chatbot/config.ts'
@@ -46,11 +47,15 @@ interface HeroProps {
 
 /**
  * The #home section: availability, name, role line, intro, calls to action, quick facts and the
- * portrait, over a faint dot grid. From lg it fills the first screen with its content centred and
- * a scroll cue at the bottom; below that it takes its natural height. Every action renders only
- * when its target exists. Text and photo fade in on load (motion-safe).
+ * portrait, on a full-width dark band (night) with a faint white dot grid; every section below
+ * stays light. The navbar turns dark while this band is under it. From lg the band fills the
+ * first screen with its content centred and a scroll cue at the bottom; below that it takes its
+ * natural height. Every action renders only when its target exists. Text and photo fade in on
+ * load (motion-safe).
  */
 export function Hero({ onOpenChat, showContact = false }: HeroProps) {
+  const sectionRef = useRef<HTMLElement>(null)
+  useDarkBandUnderNavbar(sectionRef)
   const profile = useProfile()
   const resume = useResume()
   const socialLinks = useSocialLinks()
@@ -63,26 +68,32 @@ export function Hero({ onOpenChat, showContact = false }: HeroProps) {
   const hasActions = showProjects || showContact || resume !== undefined || socialLinks.length > 0
 
   return (
-    <section id="home" aria-labelledby="hero-title" className="relative isolate bg-accent-wash">
+    <section
+      ref={sectionRef}
+      id="home"
+      aria-labelledby="hero-title"
+      // overflow-x-clip: the light behind the portrait may reach past the screen edge.
+      className="relative isolate overflow-x-clip bg-night-950 on-dark"
+    >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-dot-grid" />
       <Container className="grid items-center gap-8 py-10 sm:gap-10 sm:py-14 lg:min-h-[calc(100svh-var(--spacing-header))] lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)] lg:content-center lg:gap-16 lg:py-16">
         {/* A size container: the name (text-display) is sized to this column's width. */}
         <div className="@container motion-safe:animate-rise">
           {profile.availability ? (
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-fg-muted shadow-xs sm:mb-6 sm:text-sm">
+            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-xs font-medium text-ink-200 sm:mb-6 sm:text-sm">
               <span
                 aria-hidden="true"
-                className="size-2 shrink-0 rounded-full bg-success-600 ring-4 ring-success-50"
+                className="size-2 shrink-0 rounded-full bg-success-400 ring-4 ring-success-400/20"
               />
               {profile.availability}
             </p>
           ) : null}
-          <h1 id="hero-title" className="text-display text-fg">
+          <h1 id="hero-title" className="text-display text-white">
             {profile.fullName}
           </h1>
           {profile.headline ? <RoleLine text={profile.headline} className="mt-4 sm:mt-5" /> : null}
           {profile.intro ? (
-            <p className="mt-4 max-w-[34rem] text-[1.0625rem] text-balance text-fg-muted sm:mt-5">
+            <p className="mt-4 max-w-[34rem] text-[1.0625rem] text-balance text-ink-300 sm:mt-5">
               {profile.intro}
             </p>
           ) : null}
@@ -90,7 +101,10 @@ export function Hero({ onOpenChat, showContact = false }: HeroProps) {
           {hasActions ? (
             <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-10">
               {showProjects ? (
-                <Link to={sectionHref('projects')} className={buttonStyles({ className: 'group' })}>
+                <Link
+                  to={sectionHref('projects')}
+                  className={buttonStyles({ tone: 'dark', className: 'group' })}
+                >
                   View projects
                   <ArrowRightIcon className="-mr-1 size-[1.125rem] transition-[translate] duration-200 ease-smooth motion-safe:group-hover:translate-x-0.5" />
                 </Link>
@@ -98,7 +112,7 @@ export function Hero({ onOpenChat, showContact = false }: HeroProps) {
               {showContact ? (
                 <Link
                   to={sectionHref('contact')}
-                  className={buttonStyles({ variant: 'secondary' })}
+                  className={buttonStyles({ variant: 'secondary', tone: 'dark' })}
                 >
                   Contact
                 </Link>
@@ -107,7 +121,7 @@ export function Hero({ onOpenChat, showContact = false }: HeroProps) {
                 <a
                   href={resume.file}
                   download={resume.downloadName}
-                  className={buttonStyles({ variant: 'secondary' })}
+                  className={buttonStyles({ variant: 'secondary', tone: 'dark' })}
                 >
                   <DownloadIcon className="-ml-0.5 size-[1.125rem]" />
                   Download résumé
@@ -124,7 +138,7 @@ export function Hero({ onOpenChat, showContact = false }: HeroProps) {
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={buttonStyles({ variant: 'secondary' })}
+                          className={buttonStyles({ variant: 'secondary', tone: 'dark' })}
                         >
                           <PlatformIcon className="-ml-0.5 size-[1.125rem]" />
                           {link.label}
@@ -159,14 +173,15 @@ export function Hero({ onOpenChat, showContact = false }: HeroProps) {
 }
 
 /**
- * The headline as a role line. Its "·" separators are shown in the accent, and each item stays on
- * one line ("Data Science" never splits); when the line wraps, it breaks after a separator.
+ * The headline as a role line in light indigo. Its "·" separators are shown in the accent, and
+ * each item stays on one line ("Data Science" never splits); when the line wraps, it breaks after
+ * a separator.
  */
 function RoleLine({ text, className }: { text: string; className?: string }) {
   const items = text.split('·').map((item) => item.trim())
 
   return (
-    <p className={cn('text-heading font-medium text-balance text-ink-700', className)}>
+    <p className={cn('text-heading font-medium text-balance text-accent-200', className)}>
       {items.map((item, index) => (
         <Fragment key={`${String(index)}-${item}`}>
           {index > 0 ? ' ' : null}
@@ -175,7 +190,7 @@ function RoleLine({ text, className }: { text: string; className?: string }) {
             {index < items.length - 1 ? (
               <>
                 {' '}
-                <span className="text-accent-600">·</span>
+                <span className="text-accent-400">·</span>
               </>
             ) : null}
           </span>
@@ -190,7 +205,7 @@ function ScrollCue() {
   return (
     <Link
       to={sectionHref('about')}
-      className="absolute inset-x-0 bottom-3 mx-auto hidden min-h-11 w-max flex-col items-center justify-center gap-1 rounded-full px-4 py-1.5 text-xs font-medium tracking-[0.08em] text-fg-muted transition-colors duration-200 ease-smooth [--rise-delay:100ms] hover:text-fg motion-safe:animate-rise lg:flex"
+      className="absolute inset-x-0 bottom-3 mx-auto hidden min-h-11 w-max flex-col items-center justify-center gap-1 rounded-full px-4 py-1.5 text-xs font-medium tracking-[0.08em] text-ink-400 transition-colors duration-200 ease-smooth [--rise-delay:100ms] hover:text-white motion-safe:animate-rise lg:flex"
     >
       {/* Uppercase only on the visible word: Chrome passes text-transform on to screen readers. */}
       <span className="uppercase">Scroll</span>
