@@ -87,6 +87,72 @@ export function SparkleIcon(props: IconProps) {
   )
 }
 
+// Topic icons (AI / GenAI section). Paths from Lucide (ISC): chart-scatter, scan-eye,
+// messages-square, square-terminal and cpu.
+
+export function ChartScatterIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <g {...stroke}>
+        <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+        <g fill="currentColor">
+          <circle cx="7.5" cy="7.5" r=".5" />
+          <circle cx="18.5" cy="5.5" r=".5" />
+          <circle cx="11.5" cy="11.5" r=".5" />
+          <circle cx="7.5" cy="16.5" r=".5" />
+          <circle cx="17.5" cy="14.5" r=".5" />
+        </g>
+      </g>
+    </Icon>
+  )
+}
+
+export function ScanEyeIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <g {...stroke}>
+        <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
+        <circle cx="12" cy="12" r="1" />
+        <path d="M18.944 12.33a1 1 0 0 0 0-.66 7.5 7.5 0 0 0-13.888 0 1 1 0 0 0 0 .66 7.5 7.5 0 0 0 13.888 0" />
+      </g>
+    </Icon>
+  )
+}
+
+export function MessagesIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <g {...stroke}>
+        <path d="M16 10a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 14.286V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+        <path d="M20 9a2 2 0 0 1 2 2v10.286a.71.71 0 0 1-1.212.502l-2.202-2.202A2 2 0 0 0 17.172 19H10a2 2 0 0 1-2-2v-1" />
+      </g>
+    </Icon>
+  )
+}
+
+export function TerminalIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <g {...stroke}>
+        <path d="m7 11 2-2-2-2M11 13h4" />
+        <rect width="18" height="18" x="3" y="3" rx="2" />
+      </g>
+    </Icon>
+  )
+}
+
+export function CpuIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <g {...stroke}>
+        <path d="M12 20v2M12 2v2M17 20v2M17 2v2M2 12h2M2 17h2M2 7h2M20 12h2M20 17h2M20 7h2M7 20v2M7 2v2" />
+        <rect x="4" y="4" width="16" height="16" rx="2" />
+        <rect x="8" y="8" width="8" height="8" rx="1" />
+      </g>
+    </Icon>
+  )
+}
+
 export function LinkIcon(props: IconProps) {
   return (
     <Icon {...props}>

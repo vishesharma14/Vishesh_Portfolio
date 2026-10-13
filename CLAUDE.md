@@ -31,7 +31,7 @@ Sections, exactly these and in this order (ids live in `src/app/navigation.ts`):
 - **Education:** school, Class X, Class XII, B.Tech, college/university, CGPA or percentage, dates. When an entry is `current` and has an `endDate`, show that date as expected, e.g. "2022 – 2026 (expected)".
 - **Skills categories:** Programming, Data Analytics, AI / ML, GenAI, Web Development, Databases, Tools.
 - **Featured Projects, exactly these three:** SizerAI · Explainable Fraud Detection System · Olympic Analytics. Their text in `src/content/local/projects.ts` comes verbatim from the owner: don't reword it or add claims. Each has title, description, technologies, key features, GitHub link, live demo link, image and featured flag.
-- **AI / GenAI:** machine learning, LLMs, RAG, vector databases, prompt engineering, AI agents, computer vision, generative AI.
+- **AI / GenAI:** only topics backed by real work, verbatim from the owner in `src/content/local/aiTopics.ts`: machine learning, computer vision, large language models, generative AI, prompt engineering. RAG, vector databases and AI agents stay off the site until the owner has built something with them. A topic's optional `projects` (project slugs) become "Used in" links to those project pages; `content:check` fails on a slug that doesn't exist.
 - **GitHub Activity:** profile, contribution activity, selected repositories.
 - **Resume:** preview, View and Download.
 - **Contact:** email, phone (hidden unless the owner enables it), LinkedIn, GitHub, and a contact form that really sends.
@@ -49,7 +49,7 @@ Sections, exactly these and in this order (ids live in `src/app/navigation.ts`):
 - Other tokens: text `display|title|heading|lead|eyebrow` (`display` is the Hero name, sized to its `@container` in `cqi`); spacing `section`, `gutter`, `header`; containers `content`, `narrow`; shadows `card`, `card-hover`, `accent`; easing `smooth`. Utilities in `globals.css`: `bg-accent-wash`, `text-accent-gradient`, `bg-dot-grid` (white dots for the dark Hero band, on their own decorative layer), `bg-accent-glow` (the one glow, see above), `on-dark` (focus rings for dark surfaces), `animate-rise` (entrance fade-and-rise; only as `motion-safe:animate-rise`, staggered with `[--rise-delay:…]`) and `animate-nudge` (three gentle beats for a scroll cue; only with `motion-safe:`). Register any new custom token in `src/lib/cn.ts` (tailwind-merge) too. Colours need no entry there (any colour name counts as a colour), but `bg-*` background-image utilities do, under `bg-image`.
 - Accessibility: WCAG AA contrast (text ≥ 4.5:1, form-field outlines ≥ 3:1), visible focus ring, skip link, semantic landmarks, touch targets ≥ 44px, `prefers-reduced-motion` honoured (CSS safety net in `globals.css`; use `motion-safe:` for movement).
 - Buttons keep a visible text label at every width, phones included: no icon-only buttons (the navbar's menu toggle, named "Menu" for screen readers, predates this rule).
-- Base UI in `src/components/ui/`: `Button`/`ButtonLink` (`buttonStyles()` styles router links), `Card`, `Badge`, `Container`, `Section`, `SectionHeader`, form controls, `SkipLink`.
+- Base UI in `src/components/ui/`: `Button`/`ButtonLink` (`buttonStyles()` styles router links), `Card`, `Badge`, `Container`, `Section`, `SectionHeader`, form controls, `SkipLink`, and `cardGrid.ts` (the 1/2/3-column card grid of Skills and AI / GenAI; `cardSpan()` keeps the last row full: a last card alone spans the row, and a last row of two shares the 3-column row equally).
 
 ## Stack and tooling
 
@@ -73,7 +73,7 @@ Sections, exactly these and in this order (ids live in `src/app/navigation.ts`):
 
 ## Roadmap
 
-Done: **Steps 1–8** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Step 4 in `0f74b8d`, Step 5 in `55006fc`, Step 6 in `559760e`, Step 7 in `86fd4df`, Step 8 and the Hero redesign in the commit that adds `src/features/projects/`). **Next: Step 9.**
+Done: **Steps 1–9** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Step 4 in `0f74b8d`, Step 5 in `55006fc`, Step 6 in `559760e`, Step 7 in `86fd4df`, Step 8 and the Hero redesign in `74124ce`, the dark Hero band in `49f214b`, Step 9 in the commit that adds `src/features/ai/`). **Next: Step 10.**
 
 - **1. Done.** Vite + React + TypeScript (strict), ESLint, Prettier, scripts, `.gitignore`, `.env.example`
 - **2. Done.** Tailwind, design tokens, Inter, base UI components, reduced-motion and accessibility foundation
@@ -83,11 +83,11 @@ Done: **Steps 1–8** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Ste
 - **6. Done.** About + Education timeline (ordered list, newest first; current entries with an `endDate` show it as expected, e.g. "2023 – 2027 (expected)"; sections render nothing when their content is empty)
 - **7. Done.** Skills (one card per category in a 1/2/3-column grid, skills as a list of badges; categories without skills are hidden and the section renders nothing when all are empty; a last card alone in its row spans the full row, computed from the number of visible categories)
 - **8. Done.** Featured Projects (one wide card per featured project, in content order: title, summary, tech stack, GitHub / Live demo / optional `extraLink` buttons that open in a new tab with `rel="noopener noreferrer"`, and View details; the section renders nothing without featured projects) and a page per featured project at `/projects/:slug` (summary, links, overview, key features, technologies). Any other slug, including a project that isn't featured, shows the 404 page. The two Streamlit demos (Explainable Fraud Detection System, Olympic Analytics) sleep on Community Cloud when unused, so their Live demo link carries the hint "Hosted on Streamlit, may take a moment to wake up"
-- **9.** AI / GenAI
+- **9. Done.** AI / GenAI (one card per topic in content order, in the shared card grid: line icon, title, description, tools as badges, and "Used in" links to the pages of the topic's projects, featured ones only, so no link leads to a 404; the section renders nothing without topics)
 - **10.** Resume (preview, View, Download) + contact links; the form waits for Step 18. Once the #contact section renders, pass `showContact` to `<Hero>` so its Contact button appears
 - **11.** Responsive, accessibility and performance pass; title, description and social-preview tags; font preload. On macOS/iOS, overscrolling past the top shows the light page background above the dark navbar; fix the page background behaviour
 - **11b.** First Vercel deploy of the public site (local content only, no Supabase/admin/chatbot yet). Deploy only when I ask.
-- **12.** Supabase migrations, RLS, `is_admin()`, storage, seed data, generated types (the owner creates the Supabase project). The `projects` table needs columns for `extraLink` (label and url); also store profile `availability` and `intro`, education `shortQualification` and `shortInstitution`, and the section descriptions
+- **12.** Supabase migrations, RLS, `is_admin()`, storage, seed data, generated types (the owner creates the Supabase project). The `projects` table needs columns for `extraLink` (label and url); also store profile `availability` and `intro`, education `shortQualification` and `shortInstitution`, AI topic `projects` (project slugs), and the section descriptions
 - **13.** Switch the content module to Supabase (map database `null`s to `undefined` before parsing, since the schemas reject `null`); verify the public can read but not write
 - **14.** Admin login + MFA, protected routes
 - **15.** Admin: profile, About, contact details, social links
@@ -107,6 +107,7 @@ Done: **Steps 1–8** (Steps 1–2 in commit `9aa798e`, Step 3 in `c9b81bd`, Ste
 - Page changes (a new pathname, including browser Back) must jump, not glide: `InstantScrollOnPageChange` in `RootLayout` turns CSS smooth scrolling off for the one scroll React Router makes, so it must stay rendered just before `ScrollRestoration`. Section links on the same page still scroll smoothly.
 - IntersectionObserver reports only after the first paint. So `useDarkBandUnderNavbar` measures the navbar's starting colour once, in a `requestAnimationFrame` (after React Router's scroll restoration, which runs in a layout effect, and before the first paint), and shows it without a fade. Without that, the navbar would flash or fade on every home load and on Back.
 - The navbar's tone is a DOM attribute, not React state: `useSyncExternalStore` subscribes in a passive effect, after the first paint, so a store-based navbar showed one light frame on every fresh home load.
+- Chrome puts CSS `uppercase` into accessible names. A visible uppercase label that names a list ("Tech stack", "Used in") is `aria-hidden`, and the list gets the same words as its `aria-label`.
 - The skip link appears over both the dark and the light navbar, so its focus ring is drawn just inside its own white pill (`-outline-offset-2`).
 - The root route needs `HydrateFallback`; React Router 8 warns on direct loads of lazy routes without it.
 - The mobile menu closes on navigation by remembering the `location.key` it was opened at (the React Hooks lint rules forbid setState inside effects).

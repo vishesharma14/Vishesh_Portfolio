@@ -189,6 +189,7 @@ export const projectSchema = z.object({
 export const sectionDescriptionsSchema = z.object({
   skills: text.optional(),
   projects: text.optional(),
+  ai: text.optional(),
 })
 
 // ---- AI / GenAI --------------------------------------------------------------------
@@ -199,6 +200,8 @@ export const aiTopicSchema = z.object({
   description: text.optional(),
   /** Tools or libraries used for this topic. */
   tools: z.array(text),
+  /** Slugs of the projects that use this topic. Each must be a project in this content. */
+  projects: uniqueList(slug, (value) => value, 'project slug').optional(),
 })
 
 // ---- Social links, resume and contact ------------------------------------------------
@@ -248,15 +251,30 @@ export const contactSchema = z.object({
 
 // ---- Everything together ---------------------------------------------------------------
 
-export const portfolioContentSchema = z.object({
-  profile: profileSchema,
-  about: aboutSchema,
-  education: uniqueList(educationEntrySchema, (entry) => entry.id, 'education id'),
-  skills: uniqueList(skillCategorySchema, (category) => category.id, 'skill category'),
-  projects: uniqueList(projectSchema, (project) => project.slug, 'project slug'),
-  sectionDescriptions: sectionDescriptionsSchema,
-  aiTopics: uniqueList(aiTopicSchema, (topic) => topic.id, 'AI topic id'),
-  socialLinks: uniqueList(socialLinkSchema, (link) => link.url, 'social link'),
-  resume: resumeSchema.optional(),
-  contact: contactSchema,
-})
+export const portfolioContentSchema = z
+  .object({
+    profile: profileSchema,
+    about: aboutSchema,
+    education: uniqueList(educationEntrySchema, (entry) => entry.id, 'education id'),
+    skills: uniqueList(skillCategorySchema, (category) => category.id, 'skill category'),
+    projects: uniqueList(projectSchema, (project) => project.slug, 'project slug'),
+    sectionDescriptions: sectionDescriptionsSchema,
+    aiTopics: uniqueList(aiTopicSchema, (topic) => topic.id, 'AI topic id'),
+    socialLinks: uniqueList(socialLinkSchema, (link) => link.url, 'social link'),
+    resume: resumeSchema.optional(),
+    contact: contactSchema,
+  })
+  .superRefine((content, ctx) => {
+    // An AI topic can only point at projects that exist.
+    const projectSlugs = new Set(content.projects.map((project) => project.slug))
+    content.aiTopics.forEach((topic, topicIndex) => {
+      topic.projects?.forEach((projectSlug, index) => {
+        if (!projectSlugs.has(projectSlug))
+          ctx.addIssue({
+            code: 'custom',
+            message: `No project with the slug "${projectSlug}"`,
+            path: ['aiTopics', topicIndex, 'projects', index],
+          })
+      })
+    })
+  })

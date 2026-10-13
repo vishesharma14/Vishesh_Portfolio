@@ -1,4 +1,3 @@
-import { useId } from 'react'
 import { Link } from 'react-router'
 import { projectHref } from '../../app/navigation.ts'
 import type { Project } from '../../content/index.ts'
@@ -13,8 +12,6 @@ import { TechnologyList } from './TechnologyList.tsx'
  * The card itself isn't a link because it holds several; "View details" opens the project page.
  */
 export function ProjectCard({ project }: { project: Project }) {
-  const stackLabelId = useId()
-
   return (
     <Card as="li">
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
@@ -24,12 +21,13 @@ export function ProjectCard({ project }: { project: Project }) {
         </div>
         {project.technologies.length > 0 ? (
           <div className="lg:col-span-5">
-            <p id={stackLabelId} className="text-eyebrow text-fg-subtle uppercase">
+            {/* Screen readers get the list's own label: Chrome would read this one in capitals. */}
+            <p aria-hidden="true" className="text-eyebrow text-fg-subtle uppercase">
               Tech stack
             </p>
             <TechnologyList
               technologies={project.technologies}
-              aria-labelledby={stackLabelId}
+              aria-label="Tech stack"
               className="mt-3"
             />
           </div>
