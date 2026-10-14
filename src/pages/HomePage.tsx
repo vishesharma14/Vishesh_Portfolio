@@ -1,4 +1,6 @@
+import { site } from '../app/site.ts'
 import { useRenderedSections } from '../app/useSectionNav.ts'
+import { PageMetadata } from '../components/layout/PageMetadata.tsx'
 import { About } from '../features/about/About.tsx'
 import { AiTopics } from '../features/ai/AiTopics.tsx'
 import { Contact } from '../features/contact/Contact.tsx'
@@ -15,6 +17,7 @@ export function HomePage() {
 
   return (
     <>
+      <PageMetadata title={site.title} description={site.description} />
       <Hero showContact={rendered.contact} />
       <About />
       <Education />

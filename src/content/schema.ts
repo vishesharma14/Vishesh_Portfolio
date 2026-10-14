@@ -74,14 +74,34 @@ function uniqueList<Item extends z.ZodType>(
 /** Intrinsic pixel size of an image file. */
 const pixels = z.number().int('Use whole pixels').positive()
 
-export const imageSchema = z.object({
-  src: z.union([sitePath, httpsUrl]),
-  /** Describes the image for screen readers. Content images are informative, so it's required. */
-  alt: text,
-  /** The file's real size in pixels. Rendered as width/height so the browser reserves its shape. */
-  width: pixels,
-  height: pixels,
-})
+const imageSource = z.union([sitePath, httpsUrl])
+
+export const imageSchema = z
+  .object({
+    src: imageSource,
+    /** Describes the image for screen readers. Content images are informative, so it's required. */
+    alt: text,
+    /** The file's real size in pixels. Rendered as width/height so the browser reserves its shape. */
+    width: pixels,
+    height: pixels,
+    /**
+     * Smaller copies of the same image (same crop), each with its real pixel width, e.g. made by
+     * `npm run images`. Browsers download the smallest one that is sharp enough (srcset).
+     */
+    variants: z.array(z.object({ src: imageSource, width: pixels })).optional(),
+  })
+  .superRefine((image, ctx) => {
+    const widths = new Set<number>()
+    image.variants?.forEach((variant, index) => {
+      if (variant.width >= image.width || widths.has(variant.width))
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Each variant must be narrower than the image and have its own width',
+          path: ['variants', index, 'width'],
+        })
+      widths.add(variant.width)
+    })
+  })
 
 // ---- Profile and About ---------------------------------------------------------
 

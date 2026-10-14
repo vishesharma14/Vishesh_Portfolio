@@ -1,0 +1,167 @@
+<!doctype html>
+<!--
+  The link-preview image (public/social-preview.png, 1200×630), rendered by scripts/generate-images.ts
+  (`npm run images`) in headless Chrome. It mirrors the dark Hero band: night with the faint white dot
+  grid, the VS monogram, the name, the role line and the owner's real photo with its indigo light.
+  The {{…}} placeholders are filled in from the content; colours are the tokens in src/styles/globals.css.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Social preview</title>
+    <style>
+      @font-face {
+        font-family: 'Inter Variable';
+        font-weight: 100 900;
+        src: url('{{font}}') format('woff2');
+      }
+
+      :root {
+        --night-950: oklch(17.7% 0.034 269);
+        --accent-200: oklch(87% 0.064 278);
+        --accent-400: oklch(66% 0.16 278);
+        --accent-500: oklch(55% 0.2 278);
+        --accent-600: oklch(47% 0.21 278);
+        --accent-900: oklch(29% 0.12 278);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+      }
+
+      body {
+        position: relative;
+        background: var(--night-950);
+        color: #fff;
+        font-family: 'Inter Variable', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* The Hero's dot grid (bg-dot-grid), fading out towards the edges. */
+      .dots {
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(
+          circle,
+          color-mix(in oklab, #fff 7%, transparent) 1px,
+          transparent 1.5px
+        );
+        background-size: 24px 24px;
+        mask-image: radial-gradient(ellipse 75% 70% at 50% 40%, #000 20%, transparent 68%);
+      }
+
+      .layout {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 336px;
+        align-items: center;
+        gap: 64px;
+        height: 100%;
+        padding: 0 88px;
+      }
+
+      /* The navbar's monogram, scaled up. */
+      .mark {
+        display: grid;
+        place-items: center;
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        background: var(--accent-600);
+        font-size: 26px;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+      }
+
+      h1 {
+        margin-top: 40px;
+        font-size: 80px;
+        font-weight: 600;
+        line-height: 1.04;
+        letter-spacing: -0.04em;
+        white-space: nowrap;
+      }
+
+      /* The role line: light indigo, "·" in the accent, each item kept on one line. */
+      .roles {
+        margin-top: 24px;
+        color: var(--accent-200);
+        font-size: 32px;
+        font-weight: 500;
+        line-height: 1.35;
+        letter-spacing: -0.015em;
+      }
+
+      .roles .item {
+        white-space: nowrap;
+      }
+
+      .roles .separator {
+        color: var(--accent-400);
+      }
+
+      .portrait {
+        position: relative;
+        width: 336px;
+        aspect-ratio: 4 / 5;
+      }
+
+      /* The site's one glow, behind the photo (bg-accent-glow). */
+      .glow {
+        position: absolute;
+        inset: -64px;
+        background-image: radial-gradient(
+          closest-side,
+          color-mix(in oklab, var(--accent-500) 25%, transparent) 60%,
+          transparent
+        );
+      }
+
+      .backdrop {
+        position: absolute;
+        inset: 0;
+        translate: 16px 16px;
+        border-radius: 28px;
+        background: var(--accent-900);
+      }
+
+      .frame {
+        position: relative;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 28px;
+        box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent-400) 60%, transparent);
+      }
+
+      .frame img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dots"></div>
+    <div class="layout">
+      <div>
+        <div class="mark">{{initials}}</div>
+        <h1>{{name}}</h1>
+        <p class="roles">{{roles}}</p>
+      </div>
+      <div class="portrait">
+        <div class="glow"></div>
+        <div class="backdrop"></div>
+        <div class="frame"><img src="{{photo}}" alt="" /></div>
+      </div>
+    </div>
+  </body>
+</html>

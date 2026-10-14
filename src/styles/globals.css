@@ -9,6 +9,10 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/inter';
 
+/* Tailwind scans every file git doesn't ignore for class names. Words in the Markdown docs
+   (CLAUDE.md, README.md) would otherwise generate CSS nothing uses. */
+@source not '../../**/*.md';
+
 /* The navbar's dark variant, e.g. navbar-dark:bg-night-950. It applies inside the navbar
    ([data-navbar]) while a dark band (the Hero, the Contact band) is under it:
    useDarkBandUnderNavbar then sets data-navbar-tone="dark" on <html>. */
@@ -226,6 +230,19 @@
     text-size-adjust: 100%;
     /* Section links land below the sticky navbar instead of under it. */
     scroll-padding-top: var(--spacing-header);
+    /* Overscrolling (the rubber band on macOS and iOS) shows the root's background past the page's
+       edges, while body keeps the page itself on the canvas. So it continues the edge being pulled:
+       the navbar's colour at the top, night while a dark band (the Hero) is under it, and the
+       footer's at the bottom, once the footer is in view (data-footer-in-view, set by the Footer). */
+    background-color: var(--color-canvas);
+  }
+
+  :root[data-navbar-tone='dark'] {
+    background-color: var(--color-night-950);
+  }
+
+  :root[data-footer-in-view] {
+    background-color: var(--color-surface);
   }
 
   body {

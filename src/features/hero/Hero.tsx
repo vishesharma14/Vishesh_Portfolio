@@ -192,7 +192,7 @@ function ScrollCue() {
   return (
     <Link
       to={sectionHref('about')}
-      className="absolute inset-x-0 bottom-3 mx-auto hidden min-h-11 w-max flex-col items-center justify-center gap-1 rounded-full px-4 py-1.5 text-xs font-medium tracking-[0.08em] text-ink-400 transition-colors duration-200 ease-smooth [--rise-delay:100ms] hover:text-white motion-safe:animate-rise lg:flex"
+      className="absolute inset-x-0 bottom-2 mx-auto hidden min-h-11 w-max flex-col items-center justify-center gap-1 rounded-full px-2 py-1 text-xs font-medium tracking-[0.08em] text-ink-400 transition-colors duration-200 ease-smooth [--rise-delay:100ms] hover:text-white motion-safe:animate-rise lg:flex"
     >
       {/* Uppercase only on the visible word: Chrome passes text-transform on to screen readers. */}
       <span className="uppercase">Scroll</span>

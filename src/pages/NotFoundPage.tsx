@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { pageTitle } from '../app/site.ts'
+import { PageMetadata } from '../components/layout/PageMetadata.tsx'
 import { buttonStyles } from '../components/ui/buttonStyles.ts'
 import { Container } from '../components/ui/Container.tsx'
 import { SectionHeader } from '../components/ui/SectionHeader.tsx'
@@ -7,8 +8,7 @@ import { SectionHeader } from '../components/ui/SectionHeader.tsx'
 export function NotFoundPage() {
   return (
     <section aria-labelledby="not-found-title">
-      <title>{pageTitle('Page not found')}</title>
-      <meta name="robots" content="noindex" />
+      <PageMetadata title={pageTitle('Page not found')} noindex />
       <Container
         size="narrow"
         className="flex min-h-[calc(100svh-var(--spacing-header))] flex-col items-center justify-center py-section text-center"

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { Profile } from '../../content/index.ts'
+import type { ContentImage, Profile } from '../../content/index.ts'
 import { cn } from '../../lib/cn.ts'
 
 interface PortraitProps {
@@ -35,6 +35,8 @@ export function Portrait({ profile, className, children }: PortraitProps) {
           // object-cover crops it to the frame (centred, which keeps a centred headshot's face).
           <img
             src={profile.photo.src}
+            srcSet={photoSrcSet(profile.photo)}
+            sizes={profile.photo.variants ? photoSizes(profile.photo) : undefined}
             alt={profile.photo.alt}
             width={profile.photo.width}
             height={profile.photo.height}
@@ -54,4 +56,24 @@ export function Portrait({ profile, className, children }: PortraitProps) {
       {children}
     </div>
   )
+}
+
+/** The photo and its smaller copies as a srcset, or nothing when there are no copies. */
+function photoSrcSet({ src, width, variants }: ContentImage): string | undefined {
+  if (!variants) return undefined
+  return [...variants, { src, width }]
+    .map((image) => `${image.src} ${String(image.width)}w`)
+    .join(', ')
+}
+
+/**
+ * How wide the photo is drawn at each breakpoint, for `sizes`: in a 96px square, a 128px square
+ * from sm, and the 448×560 frame (the 28rem column at 4:5) from lg. Keep these in step with the
+ * frame's classes above and the Hero's grid. object-cover fills the frame, so a photo wider than
+ * the frame is drawn wider than the frame: max(frame width, frame height × the photo's aspect).
+ */
+function photoSizes({ width, height }: ContentImage): string {
+  const drawn = (frameWidth: number, frameHeight: number) =>
+    `${String(Math.ceil(Math.max(frameWidth, (frameHeight * width) / height)))}px`
+  return `(min-width: 64rem) ${drawn(448, 560)}, (min-width: 40rem) ${drawn(128, 128)}, ${drawn(96, 96)}`
 }

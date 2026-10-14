@@ -1,4 +1,6 @@
 import { useParams } from 'react-router'
+import { pageTitle } from '../app/site.ts'
+import { PageMetadata } from '../components/layout/PageMetadata.tsx'
 import { ProjectDetail } from '../features/projects/ProjectDetail.tsx'
 import { useFeaturedProjects } from '../features/projects/useFeaturedProjects.ts'
 import { NotFoundPage } from './NotFoundPage.tsx'
@@ -11,5 +13,12 @@ export function ProjectPage() {
   const { slug } = useParams()
   const project = useFeaturedProjects().find((item) => item.slug === slug)
 
-  return project ? <ProjectDetail project={project} /> : <NotFoundPage />
+  if (!project) return <NotFoundPage />
+
+  return (
+    <>
+      <PageMetadata title={pageTitle(project.title)} description={project.summary} />
+      <ProjectDetail project={project} />
+    </>
+  )
 }
