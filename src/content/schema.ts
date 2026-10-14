@@ -183,13 +183,19 @@ export const projectSchema = z.object({
   featured: z.boolean(),
 })
 
-// ---- Section descriptions -------------------------------------------------------------
+// ---- Section titles and descriptions ---------------------------------------------------
+
+/** Titles chosen by the owner. A section without one uses its default title, e.g. "Contact". */
+export const sectionTitlesSchema = z.object({
+  contact: text.optional(),
+})
 
 /** One-line descriptions under section titles. A section without one shows only its title. */
 export const sectionDescriptionsSchema = z.object({
   skills: text.optional(),
   projects: text.optional(),
   ai: text.optional(),
+  contact: text.optional(),
 })
 
 // ---- AI / GenAI --------------------------------------------------------------------
@@ -242,6 +248,8 @@ export const resumeSchema = z.object({
 
 export const contactSchema = z.object({
   email: z.email().optional(),
+  /** Subject filled in when a visitor starts an email from the site. */
+  emailSubject: text.optional(),
   /** Public phone number. Leave it unset to keep the phone off the site (the default). */
   phone: z
     .string()
@@ -258,6 +266,7 @@ export const portfolioContentSchema = z
     education: uniqueList(educationEntrySchema, (entry) => entry.id, 'education id'),
     skills: uniqueList(skillCategorySchema, (category) => category.id, 'skill category'),
     projects: uniqueList(projectSchema, (project) => project.slug, 'project slug'),
+    sectionTitles: sectionTitlesSchema,
     sectionDescriptions: sectionDescriptionsSchema,
     aiTopics: uniqueList(aiTopicSchema, (topic) => topic.id, 'AI topic id'),
     socialLinks: uniqueList(socialLinkSchema, (link) => link.url, 'social link'),

@@ -10,6 +10,7 @@ import type {
   projectSchema,
   resumeSchema,
   sectionDescriptionsSchema,
+  sectionTitlesSchema,
   skillCategorySchema,
   skillSchema,
   socialLinkSchema,
@@ -30,6 +31,7 @@ export type Skill = z.infer<typeof skillSchema>
 export type SkillCategory = z.infer<typeof skillCategorySchema>
 export type SkillCategoryId = SkillCategory['id']
 export type Project = z.infer<typeof projectSchema>
+export type SectionTitles = z.infer<typeof sectionTitlesSchema>
 export type SectionDescriptions = z.infer<typeof sectionDescriptionsSchema>
 export type AiTopic = z.infer<typeof aiTopicSchema>
 export type SocialLink = z.infer<typeof socialLinkSchema>

@@ -1,13 +1,16 @@
 import { Link } from 'react-router'
-import { sectionHref, sectionNav } from '../../app/navigation.ts'
+import { sectionHref } from '../../app/navigation.ts'
+import { useSectionNav } from '../../app/useSectionNav.ts'
 import { Container } from '../ui/Container.tsx'
 import { SiteMark } from './SiteMark.tsx'
 
 const footerLink =
   'inline-block py-1 text-sm text-fg-muted transition-colors duration-200 ease-smooth hover:text-fg'
 
-/** Site footer: identity, section links and a way back to the top. */
+/** Site footer: identity, the navbar's section links and a way back to the top. */
 export function Footer() {
+  const items = useSectionNav()
+
   return (
     <footer className="border-t border-border bg-surface">
       <Container className="py-12">
@@ -15,7 +18,7 @@ export function Footer() {
           <SiteMark />
           <nav aria-label="Footer">
             <ul className="grid grid-cols-2 gap-x-10 gap-y-2 sm:grid-cols-3">
-              {sectionNav.map((item) => (
+              {items.map((item) => (
                 <li key={item.id}>
                   <Link to={sectionHref(item.id)} className={footerLink}>
                     {item.label}

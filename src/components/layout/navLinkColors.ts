@@ -1,6 +1,6 @@
 /**
  * Colours of a section link in the navbar or the mobile menu, light and dark (`navbar-dark:`,
- * while the Hero band is under the navbar). On the dark navbar the current section is a white
+ * while a dark band is under the navbar). On the dark navbar the current section is a white
  * label on an indigo pill and the others are muted grey (at least 7:1 on night).
  */
 export function navLinkColors(active: boolean): string {

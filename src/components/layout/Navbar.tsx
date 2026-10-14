@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router'
-import { sectionHref, sectionIds, sectionNav } from '../../app/navigation.ts'
+import { sectionHref, sectionIds } from '../../app/navigation.ts'
+import { useSectionNav } from '../../app/useSectionNav.ts'
 import { useActiveSection } from '../../hooks/useActiveSection.ts'
 import { cn } from '../../lib/cn.ts'
 import { Container } from '../ui/Container.tsx'
@@ -8,12 +9,14 @@ import { navLinkColors } from './navLinkColors.ts'
 import { SiteMark } from './SiteMark.tsx'
 
 /**
- * Sticky site header: identity, section links on large screens, menu button below that.
- * Dark while the dark Hero band is under it (`navbar-dark:` classes, see useDarkBandUnderNavbar),
- * light everywhere else. Only the colours change: a short fade, instant with reduced motion.
+ * Sticky site header: identity, section links on large screens, menu button below that. The links
+ * cover only the sections the home page renders. Dark while a dark band (the Hero, the Contact
+ * band) is under it (`navbar-dark:` classes, see useDarkBandUnderNavbar), light everywhere else.
+ * Only the colours change: a short fade, instant with reduced motion.
  */
 export function Navbar() {
   const { pathname } = useLocation()
+  const items = useSectionNav()
   // Sections only exist on the home page, so nothing is highlighted elsewhere.
   const activeId = useActiveSection(sectionIds, pathname === '/')
 
@@ -27,7 +30,7 @@ export function Navbar() {
 
         <nav aria-label="Primary" className="hidden lg:block">
           <ul className="flex items-center gap-0.5">
-            {sectionNav.map((item) => {
+            {items.map((item) => {
               const active = item.id === activeId
               return (
                 <li key={item.id}>
@@ -47,7 +50,7 @@ export function Navbar() {
           </ul>
         </nav>
 
-        <MobileMenu activeId={activeId} />
+        <MobileMenu items={items} activeId={activeId} />
       </Container>
     </header>
   )

@@ -2,6 +2,9 @@ import { useLayoutEffect, type RefObject } from 'react'
 
 let settleFrame = 0
 
+/** The dark bands under the navbar right now. The navbar is dark while there is at least one. */
+const bandsUnderNavbar = new Set<Element>()
+
 /**
  * Sets the navbar's tone on <html>: `data-navbar-tone="dark"` while a dark band is under it
  * (read by the `navbar-dark:` variant in globals.css), no attribute otherwise. With `instant`,
@@ -25,17 +28,31 @@ function setNavbarTone(dark: boolean, instant: boolean) {
   else html.removeAttribute('data-navbar-tone')
 }
 
+/** Records whether one band is under the navbar, then sets the navbar's tone from all of them. */
+function setBandUnderNavbar(band: Element, under: boolean, instant: boolean) {
+  if (under) bandsUnderNavbar.add(band)
+  else bandsUnderNavbar.delete(band)
+  setNavbarTone(bandsUnderNavbar.size > 0, instant)
+}
+
 /**
- * Turns the navbar dark while this element, a dark band at the top of the page (the Hero), is
- * under it: from the top of the page until the band's bottom edge passes the navbar's bottom
- * edge, and again on the way back up. An IntersectionObserver reports each crossing. Its root is
- * the viewport minus the navbar, so "intersecting" means part of the band is still below the
- * navbar's bottom edge, which for a band at the top of the page means it is under the navbar.
+ * Turns the navbar dark while this element, a full-width dark band (the Hero, the Contact band),
+ * is under it, that is while the band covers the navbar's bottom edge. Each band counts on its
+ * own, so the navbar is dark over every band and light between them.
  *
- * The observer reports only after the first paint, so the starting colour is measured once just
+ * Two IntersectionObservers report the crossings, and both check the band's position then:
+ * - The band's bottom edge crossing the navbar's bottom edge: the root is the screen below the
+ *   navbar, so the band intersects it while part of the band is below that edge.
+ * - The band's top edge crossing it: the root starts 1px below the navbar and reaches far past the
+ *   screen at the sides and the bottom, so the band is fully inside (ratio 1) until its top edge
+ *   moves above that line. The 1px lets a band that starts exactly at the navbar count as under
+ *   it (the Hero at the top of the page, a band a section link scrolled to), even when layout puts
+ *   it a fraction of a pixel lower.
+ *
+ * The observers report only after the first paint, so the starting colour is measured once just
  * before that paint (after React Router has restored the scroll position) and shown without a
- * fade. When the band unmounts (another page opens), the navbar turns light at once. The tone is
- * an attribute rather than React state so that each change is in the very next painted frame.
+ * fade. When the band unmounts (another page opens), it stops counting at once. The tone is an
+ * attribute rather than React state so that each change is in the very next painted frame.
  */
 export function useDarkBandUnderNavbar(ref: RefObject<HTMLElement | null>) {
   useLayoutEffect(() => {
@@ -45,21 +62,28 @@ export function useDarkBandUnderNavbar(ref: RefObject<HTMLElement | null>) {
     // scroll-padding-top is the navbar's height (globals.css), resolved to pixels.
     const navbarHeight =
       parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0
+    const coversEdge = (rect: DOMRectReadOnly) =>
+      rect.top < navbarHeight + 1 && rect.bottom >= navbarHeight
+
     const frame = requestAnimationFrame(() => {
-      setNavbarTone(band.getBoundingClientRect().bottom >= navbarHeight, true)
+      setBandUnderNavbar(band, coversEdge(band.getBoundingClientRect()), true)
     })
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry) setNavbarTone(entry.isIntersecting, false)
-      },
-      { rootMargin: `${String(-navbarHeight)}px 0px 0px 0px` },
-    )
-    observer.observe(band)
+    const update = ([entry]: IntersectionObserverEntry[]) => {
+      if (entry) setBandUnderNavbar(band, coversEdge(entry.boundingClientRect), false)
+    }
+    const observers = [
+      new IntersectionObserver(update, { rootMargin: `${String(-navbarHeight)}px 0px 0px 0px` }),
+      new IntersectionObserver(update, {
+        rootMargin: `${String(-(navbarHeight + 1))}px 100% 1000% 100%`,
+        threshold: 1,
+      }),
+    ]
+    for (const observer of observers) observer.observe(band)
 
     return () => {
       cancelAnimationFrame(frame)
-      observer.disconnect()
-      setNavbarTone(false, true)
+      for (const observer of observers) observer.disconnect()
+      setBandUnderNavbar(band, false, true)
     }
   }, [ref])
 }

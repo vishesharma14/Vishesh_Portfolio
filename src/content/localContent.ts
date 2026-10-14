@@ -6,6 +6,7 @@ import { profile } from './local/profile.ts'
 import { projects } from './local/projects.ts'
 import { resume } from './local/resume.ts'
 import { sectionDescriptions } from './local/sectionDescriptions.ts'
+import { sectionTitles } from './local/sectionTitles.ts'
 import { skills } from './local/skills.ts'
 import { socialLinks } from './local/socialLinks.ts'
 import type { PortfolioContent } from './types.ts'
@@ -20,6 +21,7 @@ export const localContent: PortfolioContent = {
   education,
   skills,
   projects,
+  sectionTitles,
   sectionDescriptions,
   aiTopics,
   socialLinks,

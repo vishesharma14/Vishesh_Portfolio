@@ -5,7 +5,7 @@ import { cn } from '../../lib/cn.ts'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost'
 export type ButtonSize = 'sm' | 'md' | 'lg'
-/** The surface the button sits on: the light page, or the dark Hero band (night). */
+/** The surface the button sits on: the light page, or a dark band (night: the Hero, Contact). */
 export type ButtonTone = 'light' | 'dark'
 
 export interface ButtonStyleOptions {

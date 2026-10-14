@@ -10,6 +10,7 @@ export {
   useProjects,
   useResume,
   useSectionDescriptions,
+  useSectionTitles,
   useSkills,
   useSocialLinks,
 } from './hooks.ts'
@@ -27,6 +28,7 @@ export type {
   Project,
   Resume,
   SectionDescriptions,
+  SectionTitles,
   Skill,
   SkillCategory,
   SkillCategoryId,

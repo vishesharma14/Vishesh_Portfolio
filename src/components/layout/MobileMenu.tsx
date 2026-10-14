@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router'
-import { sectionHref, sectionNav, type SectionId } from '../../app/navigation.ts'
+import { sectionHref, type SectionId, type SectionNavItem } from '../../app/navigation.ts'
 import { cn } from '../../lib/cn.ts'
 import { Button } from '../ui/Button.tsx'
 import { Container } from '../ui/Container.tsx'
@@ -12,7 +12,13 @@ import { navLinkColors } from './navLinkColors.ts'
  * to the button, and any navigation (including picking a link) closes it. The button and the
  * panel follow the navbar's dark variant (`navbar-dark:`).
  */
-export function MobileMenu({ activeId }: { activeId: SectionId | null }) {
+interface MobileMenuProps {
+  /** The navbar's section links. */
+  items: SectionNavItem[]
+  activeId: SectionId | null
+}
+
+export function MobileMenu({ items, activeId }: MobileMenuProps) {
   const { key: locationKey } = useLocation()
   // Remember which location the menu was opened on; navigating anywhere closes it.
   const [openedAt, setOpenedAt] = useState<string | null>(null)
@@ -74,7 +80,7 @@ export function MobileMenu({ activeId }: { activeId: SectionId | null }) {
         <Container className="max-h-[calc(100svh-var(--spacing-header))] overflow-y-auto py-3">
           <nav aria-label="Primary">
             <ul className="grid gap-1">
-              {sectionNav.map((item) => {
+              {items.map((item) => {
                 const active = item.id === activeId
                 return (
                   <li key={item.id}>

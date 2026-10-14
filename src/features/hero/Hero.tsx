@@ -7,18 +7,11 @@ import {
   useProfile,
   useResume,
   useSocialLinks,
-  type SocialPlatform,
 } from '../../content/index.ts'
 import { buttonStyles } from '../../components/ui/buttonStyles.ts'
 import { Container } from '../../components/ui/Container.tsx'
-import {
-  ArrowDownIcon,
-  ArrowRightIcon,
-  DownloadIcon,
-  GitHubIcon,
-  LinkedInIcon,
-  LinkIcon,
-} from '../../components/ui/icons.tsx'
+import { ArrowDownIcon, ArrowRightIcon, DownloadIcon } from '../../components/ui/icons.tsx'
+import { socialIcons } from '../../components/ui/socialIcons.ts'
 import { useDarkBandUnderNavbar } from '../../hooks/useDarkBandUnderNavbar.ts'
 import { cn } from '../../lib/cn.ts'
 import { ChatbotEntry } from '../chatbot/ChatbotEntry.tsx'
@@ -29,18 +22,12 @@ import { Portrait } from './Portrait.tsx'
 import { QuickFacts } from './QuickFacts.tsx'
 import { StudyCard } from './StudyCard.tsx'
 
-const socialIcons: Record<SocialPlatform, typeof LinkIcon> = {
-  github: GitHubIcon,
-  linkedin: LinkedInIcon,
-  other: LinkIcon,
-}
-
 interface HeroProps {
   /** Opens the chat panel. Supplied once the chatbot exists (Step 21); until then it's absent. */
   onOpenChat?: () => void
   /**
    * Whether the page has a #contact section. The Contact button renders only then, so it never
-   * looks clickable without working. Pass it once that section exists (Step 10).
+   * looks clickable without working.
    */
   showContact?: boolean
 }

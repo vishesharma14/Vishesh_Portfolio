@@ -153,6 +153,49 @@ export function CpuIcon(props: IconProps) {
   )
 }
 
+// Contact icons. Paths from Lucide (ISC): mail, copy, check and phone.
+
+export function MailIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <g {...stroke}>
+        <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+        <rect x="2" y="4" width="20" height="16" rx="2" />
+      </g>
+    </Icon>
+  )
+}
+
+export function CopyIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <g {...stroke}>
+        <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+      </g>
+    </Icon>
+  )
+}
+
+export function CheckIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path {...stroke} d="M20 6 9 17l-5-5" />
+    </Icon>
+  )
+}
+
+export function PhoneIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path
+        {...stroke}
+        d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"
+      />
+    </Icon>
+  )
+}
+
 export function LinkIcon(props: IconProps) {
   return (
     <Icon {...props}>

@@ -9,6 +9,7 @@ import type {
   Project,
   Resume,
   SectionDescriptions,
+  SectionTitles,
   SkillCategory,
   SocialLink,
 } from './types.ts'
@@ -43,6 +44,10 @@ export function useSkills(): SkillCategory[] {
 
 export function useProjects(): Project[] {
   return useContent().projects
+}
+
+export function useSectionTitles(): SectionTitles {
+  return useContent().sectionTitles
 }
 
 export function useSectionDescriptions(): SectionDescriptions {

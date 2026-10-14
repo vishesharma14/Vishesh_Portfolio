@@ -10,8 +10,8 @@
 @import '@fontsource-variable/inter';
 
 /* The navbar's dark variant, e.g. navbar-dark:bg-night-950. It applies inside the navbar
-   ([data-navbar]) while the dark Hero band is under it: useDarkBandUnderNavbar then sets
-   data-navbar-tone="dark" on <html>. */
+   ([data-navbar]) while a dark band (the Hero, the Contact band) is under it:
+   useDarkBandUnderNavbar then sets data-navbar-tone="dark" on <html>. */
 @custom-variant navbar-dark (&:where(:root[data-navbar-tone='dark'] [data-navbar], :root[data-navbar-tone='dark'] [data-navbar] *));
 
 @theme {
@@ -87,8 +87,9 @@
   --color-accent-900: oklch(29% 0.12 278);
   --color-accent-950: oklch(22% 0.09 278);
 
-  /* Night: the dark Hero band only (and the navbar while it sits on it). On night, text uses
-     white, the light ink stops and the light accent stops; every other section stays light. */
+  /* Night: the two dark bands only, the Hero and the Contact band (and the navbar while one is under
+     it). On night, text uses white, the light ink stops and the light accent stops; every other
+     section stays light. */
   --color-night-950: oklch(17.7% 0.034 269); /* ≈ #0B1020, the band */
   --color-night-900: oklch(21.5% 0.04 269); /* raised surfaces: study card, menu panel */
   --color-night-800: oklch(29% 0.045 269); /* hairlines: navbar edge, dividers */
@@ -176,7 +177,7 @@
   );
 }
 
-/* Very faint white dot grid that fades out towards the edges (the mask), for the dark Hero band.
+/* Very faint white dot grid that fades out towards the edges (the mask), for the dark bands.
    Put it on its own decorative layer: the mask would also fade the element's content. At 7% white
    a dot under the dimmest hero text still leaves it above 4.5:1. */
 @utility bg-dot-grid {
@@ -202,7 +203,7 @@
   );
 }
 
-/* Dark surfaces (the Hero band, and the navbar while it sits on it): a light focus ring that keeps
+/* Dark surfaces (the dark bands, and the navbar while one is under it): a light focus ring that keeps
    at least 3:1 against night. */
 @utility on-dark {
   --focus-ring: var(--color-accent-300);
