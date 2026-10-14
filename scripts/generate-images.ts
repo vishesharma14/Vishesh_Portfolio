@@ -211,8 +211,8 @@ try {
   await writeFile(repoFile('public/apple-touch-icon.png'), await chrome.screenshot(icon, 180, 180))
   written.push('public/apple-touch-icon.png')
 
-  // The same favicon as a 32×32 PNG, its rounded corners left transparent, for browsers without
-  // SVG favicons.
+  // The same favicon as a 32×32 PNG, its corners left transparent as in the SVG, for browsers
+  // without SVG favicons.
   const fallback = `<body style="margin:0"><img src="${dataUrl('image/svg+xml', favicon)}" width="32" height="32" style="display:block"></body>`
   await writeFile(
     repoFile('public/favicon-32x32.png'),
