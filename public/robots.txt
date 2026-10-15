@@ -1,3 +1,5 @@
-# Every crawler may visit every page. The sitemap line is added with the live domain (Step 11b).
+# Every crawler may visit every page. The build writes sitemap.xml (vite.config.ts).
 User-agent: *
 Allow: /
+
+Sitemap: https://vishesh-sharma.vercel.app/sitemap.xml

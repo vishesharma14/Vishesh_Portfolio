@@ -11,10 +11,10 @@ interface PageMetadataProps {
 }
 
 /**
- * The current page's title and description, plus its canonical URL once the site has a domain
- * (site.url). React places them in <head> and swaps them when another page renders. Link previews
- * come from index.html instead, which carries the home page's tags (vite.config.ts): crawlers that
- * don't run JavaScript see those on every URL.
+ * The current page's title and description, plus its canonical URL on the live domain (site.url).
+ * React places them in <head> and swaps them when another page renders. Link previews come from
+ * index.html instead, which carries the home page's tags (vite.config.ts): crawlers that don't run
+ * JavaScript see those on every URL.
  */
 export function PageMetadata({ title, description, noindex = false }: PageMetadataProps) {
   const { pathname } = useLocation()
@@ -23,8 +23,11 @@ export function PageMetadata({ title, description, noindex = false }: PageMetada
     <>
       <title>{title}</title>
       {description ? <meta name="description" content={description} /> : null}
-      {noindex ? <meta name="robots" content="noindex" /> : null}
-      {site.url && !noindex ? <link rel="canonical" href={site.url + pathname} /> : null}
+      {noindex ? (
+        <meta name="robots" content="noindex" />
+      ) : (
+        <link rel="canonical" href={site.url + pathname} />
+      )}
     </>
   )
 }

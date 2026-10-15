@@ -11,11 +11,10 @@ export const site = {
   description:
     'Vishesh Sharma builds explainable machine-learning models and data products: fraud detection with XGBoost and SHAP, on-device computer vision and analytics.',
   /**
-   * TODO(11b) PLACEHOLDER: the live site's origin, e.g. "https://<domain>" (no trailing slash).
-   * Absolute URLs need it: the canonical link, og:url and the link-preview image. Until it is set,
-   * those tags are left out (and the build says so), rather than pointing at a made-up domain.
+   * The live site's origin (no trailing slash). Every absolute URL is built from it: the canonical
+   * links, og:url, the link-preview image and sitemap.xml. robots.txt names the sitemap's URL too.
    */
-  url: undefined as string | undefined,
+  url: 'https://vishesh-sharma.vercel.app',
   /** Colour of the browser's own bars on phones (theme-color): night-950, the Hero band. */
   themeColor: '#0b1020',
   /** The link-preview image in public/, made by `npm run images` (scripts/generate-images.ts). */
