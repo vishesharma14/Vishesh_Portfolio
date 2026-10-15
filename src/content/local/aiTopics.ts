@@ -1,9 +1,11 @@
 import type { AiTopic } from '../types.ts'
 
-// Verified: provided by the owner (2026-10-13). Keep the wording exactly as given.
-// Only topics backed by real work are listed; RAG, vector databases and AI agents are left out
-// until the owner has built something with them. Order = display order. `projects` are project
-// slugs from projects.ts (content:check fails on a slug that doesn't exist).
+// Verified: the first five provided by the owner (2026-10-13); keep their wording exactly as given.
+// The last two were written from the owner's facts about Olympic Analytics' "Ask the data"
+// (2026-10-15, recorded in CLAUDE.md), with the owner's approval. Only topics backed by real work
+// are listed: RAG and tool-calling agents only for "Ask the data", no other RAG, agent or
+// multi-agent claims. Order = display order. `projects` are project slugs from projects.ts
+// (content:check fails on a slug that doesn't exist).
 export const aiTopics: AiTopic[] = [
   {
     id: 'machine-learning',
@@ -40,5 +42,21 @@ export const aiTopics: AiTopic[] = [
     description:
       'Structured prompts, examples and output formats that make model responses consistent and checkable.',
     tools: ['ChatGPT', 'Claude', 'Gemini'],
+  },
+  {
+    id: 'rag',
+    title: 'Retrieval-Augmented Generation',
+    description:
+      'Retrieval over 43 curated notes, each statistic checked against SQL, using Gemini embeddings with a keyword-search fallback.',
+    tools: ['Gemini embeddings', 'BM25'],
+    projects: ['olympic-analytics'],
+  },
+  {
+    id: 'ai-agents',
+    title: 'AI Agents & Tool Calling',
+    description:
+      'A Gemini agent that writes SQL through a tool call, runs it in a read-only sandbox and shows the query and results with every answer.',
+    tools: ['Gemini API', 'SQLite'],
+    projects: ['olympic-analytics'],
   },
 ]

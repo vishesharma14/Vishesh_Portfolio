@@ -10,8 +10,10 @@
 @import '@fontsource-variable/inter';
 
 /* Tailwind scans every file git doesn't ignore for class names. Words in the Markdown docs
-   (CLAUDE.md, README.md) would otherwise generate CSS nothing uses. */
+   (CLAUDE.md, README.md) and in the portfolio's text (content/local, e.g. "result table") would
+   otherwise generate CSS nothing uses. */
 @source not '../../**/*.md';
+@source not '../content/local';
 
 /* The navbar's dark variant, e.g. navbar-dark:bg-night-950. It applies inside the navbar
    ([data-navbar]) while a dark band (the Hero, the Contact band) is under it:

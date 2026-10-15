@@ -4,8 +4,10 @@ import type { AiTopic, Project } from '../../content/index.ts'
 import { Card } from '../../components/ui/Card.tsx'
 import {
   ArrowRightIcon,
+  BotIcon,
   ChartScatterIcon,
   CpuIcon,
+  FileSearchIcon,
   MessagesIcon,
   ScanEyeIcon,
   SparkleIcon,
@@ -21,6 +23,8 @@ const topicIcons: Record<string, typeof SparkleIcon> = {
   llms: MessagesIcon,
   'generative-ai': SparkleIcon,
   'prompt-engineering': TerminalIcon,
+  rag: FileSearchIcon,
+  'ai-agents': BotIcon,
 }
 
 interface AiTopicCardProps {

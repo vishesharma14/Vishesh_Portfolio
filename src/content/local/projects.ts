@@ -2,7 +2,12 @@ import type { Project } from '../types.ts'
 
 // Verified: the three featured projects, with text provided verbatim by the owner (2026-10-10).
 // Keep the wording exactly as given: no rewording and no added claims. Order = display order.
-// TODO(content): add an `image` for each project ({ src, alt, width, height }) once available.
+// One owner-approved exception: Olympic Analytics' first description paragraph, first six key
+// features and its Gemini API, RAG, LLM tool calling, Embeddings and pytest tags were written from
+// the owner's "Ask the data" facts (2026-10-15, recorded in CLAUDE.md) and say nothing more. Its
+// summary is the owner's own sentence (2026-10-15).
+// TODO(content): add an `image` for SizerAI and the fraud detection system once available.
+// No component shows project images yet.
 export const projects: Project[] = [
   {
     slug: 'sizerai',
@@ -73,14 +78,19 @@ export const projects: Project[] = [
     slug: 'olympic-analytics',
     title: 'Olympic Analytics',
     summary:
-      'Interactive analytics dashboard that turns 120 years of Summer Olympics data into medal tallies, country and athlete insights, an animated medal race and a choropleth world map.',
+      'A Streamlit app for 120 years of Summer Olympics data, with "Ask the data": a Gemini assistant that answers plain-English questions by writing SQL and shows the query behind every answer.',
     description: [
+      '"Ask the data" is a Gemini-powered assistant inside the Streamlit app. It combines retrieval over curated notes with a tool-calling agent whose SQL runs in a read-only sandbox, and checks that every number in an answer appears in the query results or the notes.',
       'Built on Kaggle\'s "120 years of Olympic history" dataset, the dashboard turns athlete-level records into four views: a filterable medal tally, an overall analysis, country-wise analysis and athlete-wise analysis.',
       'It pairs Plotly interactive charts, including a choropleth medal map and an animated medal race of the top 10 nations, with Matplotlib and Seaborn heatmaps and scatter plots, plus auto-generated "Did You Know?" facts.',
       'The same data is also analysed in SQL, answering 10 business questions on SQLite and MySQL 8, and visualised in an interactive Tableau Public dashboard.',
     ],
     technologies: [
       'Python',
+      'Gemini API',
+      'RAG',
+      'LLM tool calling',
+      'Embeddings',
       'Streamlit',
       'Pandas',
       'NumPy',
@@ -90,8 +100,15 @@ export const projects: Project[] = [
       'SQL',
       'MySQL',
       'Tableau',
+      'pytest',
     ],
     keyFeatures: [
+      'Ask the data: a Gemini-powered assistant that answers questions about the Olympics and shows the SQL query and result table behind every answer',
+      'Retrieval-augmented generation (RAG): 43 curated notes, every statistic checked against SQL, found with Gemini embeddings and a keyword-search fallback',
+      'Tool-calling agent: Gemini writes SQL and runs it through a tool on a read-only SQLite sandbox, limited to one statement, 5 seconds and a capped number of rows',
+      'Grounding check: every number in an answer must appear in the query results or the notes',
+      'Evaluation: accuracy on 33 SQL-verified questions rose from 55% to 88% after prompt fixes; a fresh held-out set scored 8/8 (only 8 questions)',
+      'Live on Streamlit Community Cloud: a fallback chain of free-tier models, a cooldown, per-session and daily limits, and 400+ automated tests',
       'Medal tally filtered by year and country',
       'Choropleth medal map and an animated medal race of the top 10 nations',
       'Country-wise medal trends, a sport-wise performance heatmap and top athletes',
@@ -104,6 +121,19 @@ export const projects: Project[] = [
     extraLink: {
       label: 'Tableau Dashboard',
       url: 'https://public.tableau.com/app/profile/vishesh.sharma3888/viz/OlympicsMedalDashboard_17916664107200/OlympicsDashboard',
+    },
+    image: {
+      src: '/images/olympic-ask-the-data.webp',
+      alt: 'The Ask the data page answering "Which 5 countries have won the most swimming medals?", with the numbers checked against the query results and the SQL query and its result table shown under the answer',
+      width: 1273,
+      height: 553,
+      // Smaller copies made like the photo's (Chrome canvas, WebP quality 0.82).
+      variants: [
+        { src: '/images/olympic-ask-the-data-320.webp', width: 320 },
+        { src: '/images/olympic-ask-the-data-480.webp', width: 480 },
+        { src: '/images/olympic-ask-the-data-640.webp', width: 640 },
+        { src: '/images/olympic-ask-the-data-960.webp', width: 960 },
+      ],
     },
     featured: true,
   },

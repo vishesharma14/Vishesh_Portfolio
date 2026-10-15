@@ -41,6 +41,11 @@ export const skills: SkillCategory[] = [
       { name: 'LLM APIs' },
       { name: 'Prompt Engineering' },
       { name: 'Dify AI' },
+      // Added 2026-10-15, backed by Olympic Analytics' "Ask the data" (see CLAUDE.md).
+      { name: 'RAG' },
+      { name: 'Function Calling' },
+      { name: 'Embeddings' },
+      { name: 'LLM Evaluation' },
     ],
   },
   {

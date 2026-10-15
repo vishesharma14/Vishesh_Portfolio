@@ -88,7 +88,7 @@ export function SparkleIcon(props: IconProps) {
 }
 
 // Topic icons (AI / GenAI section). Paths from Lucide (ISC): chart-scatter, scan-eye,
-// messages-square, square-terminal and cpu.
+// messages-square, square-terminal, file-search, bot and cpu.
 
 export function ChartScatterIcon(props: IconProps) {
   return (
@@ -136,6 +136,29 @@ export function TerminalIcon(props: IconProps) {
       <g {...stroke}>
         <path d="m7 11 2-2-2-2M11 13h4" />
         <rect width="18" height="18" x="3" y="3" rx="2" />
+      </g>
+    </Icon>
+  )
+}
+
+export function FileSearchIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <g {...stroke}>
+        <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+        <path d="M14 2v5a1 1 0 0 0 1 1h5M13.3 16.3 15 18" />
+        <circle cx="11.5" cy="14.5" r="2.5" />
+      </g>
+    </Icon>
+  )
+}
+
+export function BotIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <g {...stroke}>
+        <path d="M12 8V4H8M2 14h2M20 14h2M15 13v2M9 13v2" />
+        <rect width="16" height="12" x="4" y="8" rx="2" />
       </g>
     </Icon>
   )
